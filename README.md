@@ -1,4 +1,3 @@
 # Bootcamp Project
 
-Proyecto creado para practicar configuración de entorno,
-uso de Git, GitHub y flujo de trabajo con ramas.
+Este proyecto forma parte del bootcamp de desarrollo.
