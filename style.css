@@ -1,9 +1,9 @@
 :root {
   --color-primary: #4f46e5;
-  --color-bg: #f6f7fb;
-  --color-card: #ffffff;
-  --color-text: #1f2937;
-  --color-border: #e5e7eb;
+  --color-bg: #f6f2ef;
+  --color-card: #f6f2ef;
+  --color-text: #000000;
+  --color-border: #000000;
 
   --radius: 10px;
   --space: 16px;
@@ -104,5 +104,22 @@ button:hover {
 button:focus,
 input:focus {
   outline: 2px solid var(--color-primary);
+}
+
+@media (max-width: 768px) {
+
+  main {
+    flex-direction: column;
+  }
+
+  .stats {
+    width: 100%;
+  }
+
+  form {
+    flex-direction: column;
+    gap: 10px;
+  }
+
 }
 

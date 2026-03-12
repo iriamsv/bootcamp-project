@@ -4,60 +4,58 @@
 <head>
   <meta charset="UTF-8">
   <title>TaskFlow</title>
+
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 
-<header>
-  <h1>TaskFlow</h1>
-</header>
+  <header>
+    <h1>Tareas</h1>
+  </header>
 
-<main>
-    <form id="task-form">
-
-  <label for="task-title">Nueva tarea</label>
-
-  <input
-    type="text"
-    id="task-title"
-    name="task"
-    placeholder="Escribe una tarea">
-
-  <button type="submit">
-    Añadir tarea
-  </button>
-
-    </form>
+  <main>
 
     <section class="task-list">
+      <form id="task-form">
 
-<h2>Lista de tareas</h2>
+        <label for="task-title"></label>
 
-<ul id="tasks"></ul>
+        <input type="text" id="task-title">
+
+        <button type="submit">Añadir tarea</button>
+
+      </form>
+
+      <ul id="tasks"></ul>
 
     </section>
 
-</main>
 
-<aside>
+    <aside class="stats">
 
-<h2>Estadísticas</h2>
+      <h2>Estadísticas</h2>
 
-<p>Total: <span id="total">0</span></p>
-<p>Completadas: <span id="completed">0</span></p>
-<p>Pendientes: <span id="pending">0</span></p>
+      <p>Total: <span id="total">0</span></p>
+      <p>Completadas: <span id="completed">0</span></p>
+      <p>Pendientes: <span id="pending">0</span></p>
 
-</aside>
+    </aside>
 
-<template id="task-template">
+  </main>
 
-<li class="task">
-<input type="checkbox">
-<span class="task-title"></span>
-<button class="delete-task">Eliminar</button>
-</li>
+  <template id="task-template">
 
-</template>
+   <li class="task">
+    <input type="checkbox">
+    <span class="task-title"></span>
+    <button class="delete-task">Eliminar</button>
+   </li>
+
+  </template>
+
+  <script src="app.js"></script>
 
 </body>
 
