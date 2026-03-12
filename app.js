@@ -66,6 +66,18 @@ function renderTasks() {
 
     const span = document.createElement("span");
     span.textContent = task.title;
+    span.addEventListener("dblclick", () => {
+
+     const newTitle = prompt("Editar tarea:", task.title);
+
+        if (newTitle !== null && newTitle.trim() !== "") {
+            task.title = newTitle.trim();
+
+         localStorage.setItem("tasks", JSON.stringify(tasks));
+
+            renderTasks();
+        }
+    });
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Eliminar";
