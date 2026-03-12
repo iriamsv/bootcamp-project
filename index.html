@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>TaskFlow</title>
+</head>
+
+<body>
+
+<header>
+  <h1>TaskFlow</h1>
+</header>
+
+<main>
+    <form id="task-form">
+
+  <label for="task-title">Nueva tarea</label>
+
+  <input
+    type="text"
+    id="task-title"
+    name="task"
+    placeholder="Escribe una tarea">
+
+  <button type="submit">
+    Añadir tarea
+  </button>
+
+    </form>
+
+    <section class="task-list">
+
+<h2>Lista de tareas</h2>
+
+<ul id="tasks"></ul>
+
+    </section>
+
+</main>
+
+<aside>
+
+<h2>Estadísticas</h2>
+
+<p>Total: <span id="total">0</span></p>
+<p>Completadas: <span id="completed">0</span></p>
+<p>Pendientes: <span id="pending">0</span></p>
+
+</aside>
+
+<template id="task-template">
+
+<li class="task">
+<input type="checkbox">
+<span class="task-title"></span>
+<button class="delete-task">Eliminar</button>
+</li>
+
+</template>
+
+</body>
+
+</html>
