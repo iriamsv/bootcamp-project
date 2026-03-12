@@ -55,10 +55,15 @@ function renderTasks() {
      filteredTasks = tasks.filter(task => task.completed);
     }
 
+
   filteredTasks.forEach(task => {
 
     const li = document.createElement("li");
     li.classList.add("task");
+
+    if (task.completed) {
+          li.classList.add("completed");
+    }
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -77,6 +82,8 @@ function renderTasks() {
 
             renderTasks();
         }
+
+
     });
 
     const deleteBtn = document.createElement("button");
