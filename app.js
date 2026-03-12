@@ -1,5 +1,5 @@
 console.log("JS funcionando");
-const tasks = [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 const form = document.getElementById("task-form");
 const input = document.getElementById("task-title");
 const taskList = document.getElementById("tasks");
@@ -20,6 +20,7 @@ form.addEventListener("submit", function (event) {
   };
 
   tasks.push(task);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 
   input.value = "";
 
@@ -48,12 +49,18 @@ function renderTasks() {
 
     checkbox.addEventListener("change", () => {
       task.completed = checkbox.checked;
+
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+
       renderTasks();
     });
 
     deleteBtn.addEventListener("click", () => {
       const index = tasks.findIndex(t => t.id === task.id);
       tasks.splice(index, 1);
+
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+
       renderTasks();
     });
 
@@ -67,9 +74,6 @@ function renderTasks() {
 
 }
 
-checkbox.addEventListener("change", () => {
-  task.completed = checkbox.checked;
-
-});
+renderTasks();
 
 
