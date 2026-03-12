@@ -18,6 +18,12 @@
   <main>
 
     <section class="task-list">
+      <div class="filters">
+       <button data-filter="all">Todas</button>
+       <button data-filter="pending">Pendientes</button>
+       <button data-filter="completed">Completadas</button>
+      </div>
+
       <form id="task-form">
 
         <label for="task-title"></label>
@@ -29,12 +35,6 @@
       </form>
 
       <ul id="tasks"></ul>
-
-      <div class="filters">
-       <button data-filter="all">Todas</button>
-       <button data-filter="pending">Pendientes</button>
-       <button data-filter="completed">Completadas</button>
-      </div>
 
     </section>
 
