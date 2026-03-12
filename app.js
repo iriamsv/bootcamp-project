@@ -1,8 +1,22 @@
 console.log("JS funcionando");
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+
 const form = document.getElementById("task-form");
 const input = document.getElementById("task-title");
 const taskList = document.getElementById("tasks");
+const filterButtons = document.querySelectorAll(".filters button");
+const totalTasks = document.getElementById("total-tasks");
+const completedTasks = document.getElementById("completed-tasks");
+const pendingTasks = document.getElementById("pending-tasks");
+let currentFilter = "all";
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+filterButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    currentFilter = button.dataset.filter;
+    renderTasks();
+  });
+});
 
 form.addEventListener("submit", function (event) {
 
@@ -31,8 +45,17 @@ form.addEventListener("submit", function (event) {
 function renderTasks() {
 
   taskList.innerHTML = "";
+  let filteredTasks = tasks;
 
-  tasks.forEach(task => {
+    if (currentFilter === "pending") {
+     filteredTasks = tasks.filter(task => !task.completed);
+    }
+
+    if (currentFilter === "completed") {
+     filteredTasks = tasks.filter(task => task.completed);
+    }
+
+  filteredTasks.forEach(task => {
 
     const li = document.createElement("li");
     li.classList.add("task");
@@ -71,6 +94,14 @@ function renderTasks() {
     taskList.appendChild(li);
 
   });
+
+    const total = tasks.length;
+    const completed = tasks.filter(task => task.completed).length;
+    const pending = total - completed;
+
+    totalTasks.textContent = total;
+    completedTasks.textContent = completed;
+    pendingTasks.textContent = pending;
 
 }
 
