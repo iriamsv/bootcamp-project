@@ -11,36 +11,77 @@
 
 <body>
 
-  <header>
-    <h1>Tareas</h1>
-  </header>
+<header>
+  <h1>Tareas</h1>
+</header>
 
-  <main>
 
-    <section class="task-list">
+<main>
 
-      <form id="task-form">
+  <!-- =========================
+       LISTA DE TAREAS
+  ========================= -->
 
-        <label for="task-title"></label>
+  <section class="task-list">
 
-        <input type="text" id="task-title">
+    <div class="top-controls">
 
-        <button type="submit">Añadir tarea</button>
+      <button type="button" id="openModal" class="add-btn">
+        + Añadir tarea
+      </button>
 
-      </form>
-      
       <div class="filters">
-       <button data-filter="all">Todas</button>
-       <button data-filter="pending">Pendientes</button>
-       <button data-filter="completed">Completadas</button>
+
+        <button data-filter="all">Todas</button>
+        <button data-filter="pending">Pendientes</button>
+        <button data-filter="completed">Completadas</button>
+
+        <div class="category-filter">
+
+          <button id="categoryButton">Categorías</button>
+
+          <select id="categorySelect" class="hidden">
+            <option value="all">Todas</option>
+            <option value="personal">Personal</option>
+            <option value="trabajo">Trabajo</option>
+            <option value="estudio">Estudio</option>
+            <option value="compras">Compras</option>
+            <option value="otros">Otros</option>
+          </select>
+
+        </div>
+
       </div>
 
-      <ul id="tasks"></ul>
+    </div>
 
-    </section>
+    <!-- Lista de tareas -->
+    <ul id="tasks"></ul>
+
+  </section>
 
 
-    <aside class="stats">
+
+  <!-- =========================
+       PANEL DERECHO
+  ========================= -->
+
+  <aside class="stats">
+
+    <!-- Calendario -->
+
+    <div class="calendar-box">
+
+      <h2>Calendario</h2>
+
+      <div id="calendar"></div>
+
+    </div>
+
+
+    <!-- Estadísticas -->
+
+    <div class="statistics">
 
       <h2>Estadísticas</h2>
 
@@ -48,22 +89,50 @@
       <p>Completadas: <span id="completed-tasks">0</span></p>
       <p>Pendientes: <span id="pending-tasks">0</span></p>
 
-    </aside>
+    </div>
 
-  </main>
+  </aside>
 
-  <template id="task-template">
+</main>
 
-   <li class="task">
-    <input type="checkbox">
-    <span class="task-title"></span>
-    <button class="delete-task">Eliminar</button>
-   </li>
 
-  </template>
 
-  <script src="app.js"></script>
+<!-- =========================
+     MODAL NUEVA TAREA
+========================= -->
+
+<div id="taskModal" class="modal hidden">
+
+  <div class="modal-content">
+
+    <h2>Nueva tarea</h2>
+
+    <input id="modalTaskTitle" type="text" placeholder="Título de la tarea">
+
+    <label>Categoría</label>
+    <select id="modalTaskCategory">
+      <option value="personal">Personal</option>
+      <option value="trabajo">Trabajo</option>
+      <option value="estudio">Estudio</option>
+      <option value="compras">Compras</option>
+      <option value="otros">Otros</option>
+    </select>
+
+    <label>Fecha objetivo</label>
+    <input id="modalTaskDate" type="date">
+
+    <div class="modal-buttons">
+      <button id="saveTask">Guardar</button>
+      <button id="closeModal">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<script src="app.js"></script>
 
 </body>
-
 </html>

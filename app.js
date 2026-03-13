@@ -1,60 +1,115 @@
 console.log("JS funcionando");
 
+/* -------------------- ELEMENTOS -------------------- */
 
-const form = document.getElementById("task-form");
-const input = document.getElementById("task-title");
 const taskList = document.getElementById("tasks");
 const filterButtons = document.querySelectorAll(".filters button");
+
 const totalTasks = document.getElementById("total-tasks");
 const completedTasks = document.getElementById("completed-tasks");
 const pendingTasks = document.getElementById("pending-tasks");
+
+const openModal = document.getElementById("openModal");
+const modal = document.getElementById("taskModal");
+const closeModal = document.getElementById("closeModal");
+
+const saveTask = document.getElementById("saveTask");
+const modalTitle = document.getElementById("modalTaskTitle");
+const modalCategory = document.getElementById("modalTaskCategory");
+const modalDate = document.getElementById("modalTaskDate");
+
+const categoryButton = document.getElementById("categoryButton");
+const categorySelect = document.getElementById("categorySelect");
+
+const calendar = document.getElementById("calendar");
+
+/* -------------------- ESTADO -------------------- */
+
+let currentCategory = "all";
 let currentFilter = "all";
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+/* ------------------ DESPLEGABLE CATEGORIAS ----------------- */
+
+categoryButton.addEventListener("click", () => {
+  categorySelect.classList.toggle("hidden");
+});
+
+categorySelect.addEventListener("change", () => {
+  currentCategory = categorySelect.value;
+  renderTasks();
+  renderCalendar();
+});
+
+/* -------------------- FILTROS -------------------- */
 
 filterButtons.forEach(button => {
   button.addEventListener("click", () => {
     currentFilter = button.dataset.filter;
     renderTasks();
+    renderCalendar();
   });
 });
 
-form.addEventListener("submit", function (event) {
+/* -------------------- MODAL -------------------- */
 
-  event.preventDefault();
+openModal.addEventListener("click", () => {
+  modal.classList.remove("hidden");
+});
 
-  const title = input.value.trim();
+closeModal.addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
+
+/* -------------------- CREAR TAREA -------------------- */
+
+saveTask.addEventListener("click", () => {
+
+  const title = modalTitle.value.trim();
 
   if (title === "") return;
 
   const task = {
     id: Date.now(),
     title: title,
-    completed: false,
-    createdAt: new Date()
+    category: modalCategory.value,
+    date: modalDate.value,
+    completed: false
   };
 
   tasks.push(task);
+
   localStorage.setItem("tasks", JSON.stringify(tasks));
 
-  input.value = "";
+  modalTitle.value = "";
+  modalCategory.value = "";
+  modalDate.value = "";
+
+  modal.classList.add("hidden");
 
   renderTasks();
-
+  renderCalendar();
 });
+
+/* -------------------- RENDERIZAR TAREAS -------------------- */
 
 function renderTasks() {
 
   taskList.innerHTML = "";
+
   let filteredTasks = tasks;
 
-    if (currentFilter === "pending") {
-     filteredTasks = tasks.filter(task => !task.completed);
-    }
+  if (currentFilter === "pending") {
+    filteredTasks = tasks.filter(task => !task.completed);
+  }
 
-    if (currentFilter === "completed") {
-     filteredTasks = tasks.filter(task => task.completed);
-    }
+  if (currentFilter === "completed") {
+    filteredTasks = tasks.filter(task => task.completed);
+  }
 
+  if (currentCategory !== "all") {
+    filteredTasks = filteredTasks.filter(task => task.category === currentCategory);
+  }
 
   filteredTasks.forEach(task => {
 
@@ -62,68 +117,152 @@ function renderTasks() {
     li.classList.add("task");
 
     if (task.completed) {
-          li.classList.add("completed");
+      li.classList.add("completed");
     }
+
+    /* checkbox */
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;
 
+    /* titulo */
+
     const span = document.createElement("span");
     span.textContent = task.title;
+
+    /* editar tarea */
+
     span.addEventListener("dblclick", () => {
 
-     const newTitle = prompt("Editar tarea:", task.title);
+      const newTitle = prompt("Editar tarea:", task.title);
 
-        if (newTitle !== null && newTitle.trim() !== "") {
-            task.title = newTitle.trim();
+      if (newTitle !== null && newTitle.trim() !== "") {
 
-         localStorage.setItem("tasks", JSON.stringify(tasks));
+        task.title = newTitle.trim();
 
-            renderTasks();
-        }
+        localStorage.setItem("tasks", JSON.stringify(tasks));
 
-
+        renderTasks();
+        renderCalendar();
+      }
     });
+
+    /* categoria */
+
+    const category = document.createElement("small");
+    category.textContent = task.category || "";
+
+    /* fecha */
+
+    const date = document.createElement("small");
+    date.textContent = task.date || "";
+
+    /* eliminar */
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Eliminar";
 
+    /* completar */
+
     checkbox.addEventListener("change", () => {
+
       task.completed = checkbox.checked;
 
       localStorage.setItem("tasks", JSON.stringify(tasks));
 
       renderTasks();
+      renderCalendar();
     });
 
+    /* borrar */
+
     deleteBtn.addEventListener("click", () => {
+
       const index = tasks.findIndex(t => t.id === task.id);
+
       tasks.splice(index, 1);
 
       localStorage.setItem("tasks", JSON.stringify(tasks));
 
       renderTasks();
+      renderCalendar();
     });
 
     li.appendChild(checkbox);
     li.appendChild(span);
+    li.appendChild(category);
+    li.appendChild(date);
     li.appendChild(deleteBtn);
 
     taskList.appendChild(li);
-
   });
 
-    const total = tasks.length;
-    const completed = tasks.filter(task => task.completed).length;
-    const pending = total - completed;
+  /* -------------------- ESTADISTICAS -------------------- */
 
-    totalTasks.textContent = total;
-    completedTasks.textContent = completed;
-    pendingTasks.textContent = pending;
+  const total = tasks.length;
+  const completed = tasks.filter(task => task.completed).length;
+  const pending = total - completed;
 
+  totalTasks.textContent = total;
+  completedTasks.textContent = completed;
+  pendingTasks.textContent = pending;
 }
 
+/* -------------------- CALENDARIO -------------------- */
+
+function renderCalendar() {
+
+  if (!calendar) return;
+
+  calendar.innerHTML = "";
+
+  const days = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+
+  days.forEach(day => {
+    const el = document.createElement("div");
+    el.classList.add("day-name");
+    el.textContent = day;
+    calendar.appendChild(el);
+  });
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const totalDays = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay; i++) {
+    calendar.appendChild(document.createElement("div"));
+  }
+
+  for (let d = 1; d <= totalDays; d++) {
+
+    const day = document.createElement("div");
+    day.classList.add("day");
+    day.textContent = d;
+
+    const hasTask = tasks.some(task => {
+
+      if (!task.date || task.completed) return false;
+
+      const taskDate = new Date(task.date);
+
+      return taskDate.getDate() === d &&
+             taskDate.getMonth() === month &&
+             taskDate.getFullYear() === year;
+    });
+
+    if (hasTask) {
+      day.classList.add("has-task");
+    }
+
+    calendar.appendChild(day);
+  }
+}
+
+/* -------------------- INICIALIZAR -------------------- */
+
 renderTasks();
-
-
+renderCalendar();
