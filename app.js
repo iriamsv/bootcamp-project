@@ -23,11 +23,16 @@ const categorySelect = document.getElementById("categorySelect");
 
 const calendar = document.getElementById("calendar");
 
+const searchButton = document.getElementById("searchButton");
+const searchInput = document.getElementById("searchInput");
+
+
 /* -------------------- ESTADO -------------------- */
 
 let currentCategory = "all";
 let currentFilter = "all";
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let searchText = "";
 
 /* ------------------ DESPLEGABLE CATEGORIAS ----------------- */
 
@@ -39,6 +44,26 @@ categorySelect.addEventListener("change", () => {
   currentCategory = categorySelect.value;
   renderTasks();
   renderCalendar();
+});
+
+/* ----------------------- BÚSQUEDAS ----------------------- */
+
+searchButton.addEventListener("click", () => {
+
+  searchInput.classList.toggle("hidden");
+
+  if (!searchInput.classList.contains("hidden")) {
+    searchInput.focus();
+  }
+
+});
+
+searchInput.addEventListener("input", () => {
+
+  searchText = searchInput.value.toLowerCase();
+
+  renderTasks();
+
 });
 
 /* -------------------- FILTROS -------------------- */
@@ -111,6 +136,12 @@ function renderTasks() {
     filteredTasks = filteredTasks.filter(task => task.category === currentCategory);
   }
 
+  if (searchText !== "") {
+    filteredTasks = filteredTasks.filter(task =>
+      task.title.toLowerCase().includes(searchText)
+    );
+  }
+
   filteredTasks.forEach(task => {
 
     const li = document.createElement("li");
@@ -125,6 +156,23 @@ function renderTasks() {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;
+    const customCheckbox = document.createElement("div");
+    customCheckbox.classList.add("custom-checkbox");
+
+    if (task.completed) {
+      customCheckbox.classList.add("checked");
+    }
+
+    customCheckbox.addEventListener("click", () => {
+
+      task.completed = !task.completed;
+
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+
+      renderTasks();
+      renderCalendar();
+
+    });
 
     /* titulo */
 
@@ -189,10 +237,20 @@ function renderTasks() {
       renderCalendar();
     });
 
-    li.appendChild(checkbox);
-    li.appendChild(span);
-    li.appendChild(category);
-    li.appendChild(date);
+    const textContainer = document.createElement("div");
+    textContainer.classList.add("task-text");
+
+    const meta = document.createElement("div");
+    meta.classList.add("task-meta");
+
+    meta.appendChild(category);
+    meta.appendChild(date);
+
+    textContainer.appendChild(span);
+    textContainer.appendChild(meta);
+
+    li.appendChild(customCheckbox);
+    li.appendChild(textContainer);
     li.appendChild(deleteBtn);
 
     taskList.appendChild(li);

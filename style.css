@@ -12,9 +12,8 @@
   --radius: 10px;
   --space: 16px;
 
-  --font-main: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --font-main: "Inter", system-ui, -apple-system, sans-serif;
 }
-
 
 
 /* =========================
@@ -28,13 +27,12 @@
 }
 
 
-
 /* =========================
    BASE
 ========================= */
 
 body {
-  font-family: var(--font-main);
+  font-family: "Inter", sans-serif;
   background: var(--color-bg);
   color: var(--color-text);
   padding: 24px;
@@ -43,7 +41,6 @@ body {
 h1 {
   text-align: center;
 }
-
 
 
 /* =========================
@@ -159,6 +156,63 @@ main {
 
 
 /* =========================
+   BUSCADOR
+========================= */
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-btn {
+  width: 40px;
+  height: 40px;
+
+  border: 2px solid black;
+  border-radius: 50%;
+
+  background: #f6f2ef;
+  color: black;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.search-btn:hover {
+  background: black;
+  color: white;
+}
+
+/* hace que el icono cambie de color con el botón */
+.search-btn svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+/* campo de búsqueda */
+
+#searchInput {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 2px solid black;
+  font-size: 14px;
+}
+
+/* ocultar elementos */
+
+.hidden {
+  display: none;
+}
+
+
+/* =========================
    FILTRO CATEGORIAS
 ========================= */
 
@@ -242,11 +296,21 @@ input:focus {
 .task {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 15px;
   border: 2px solid black;
-  border-radius: 15px;
-  padding: 10px 20px;
+  border-radius: 20px;
+  padding: 15px 20px;
   margin-bottom: 15px;
+}
+
+.task-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-text span {
+  font-size: 16px;
 }
 
 .task span {
@@ -260,14 +324,23 @@ input:focus {
   opacity: 0.7;
 }
 
+.task-meta {
+  font-size: 12px;
+  color: #555;
+  display: flex;
+  gap: 10px;
+}
+
 .task button {
   background: black;
-  color: #f6f2ef;
+  color: white;
   border: none;
   border-radius: 12px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   cursor: pointer;
 }
+
+
 
 
 
@@ -278,6 +351,31 @@ input:focus {
 .task.completed span {
   text-decoration: line-through;
   opacity: 0.6;
+}
+
+.task input[type="checkbox"] {
+  display: none;
+}
+
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid black;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.custom-checkbox.checked {
+  background: black;
+  color: white;
+}
+
+.custom-checkbox.checked::after {
+  content: "✓";
+  font-size: 12px;
 }
 
 
