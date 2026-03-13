@@ -34,6 +34,28 @@ let currentFilter = "all";
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let searchText = "";
 
+/* -------------------- DARK MODE -------------------- */
+
+const themeToggle = document.getElementById("themeToggle");
+
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme === "dark") {
+  document.documentElement.classList.add("dark");
+}
+
+themeToggle.addEventListener("click", () => {
+
+  document.documentElement.classList.toggle("dark");
+
+  if (document.documentElement.classList.contains("dark")) {
+    localStorage.setItem("theme", "dark");
+  } else {
+    localStorage.setItem("theme", "light");
+  }
+
+});
+
 /* ------------------ DESPLEGABLE CATEGORIAS ----------------- */
 
 categoryButton.addEventListener("click", () => {
@@ -144,117 +166,110 @@ function renderTasks() {
 
   filteredTasks.forEach(task => {
 
-    const li = document.createElement("li");
-    li.classList.add("task");
+  const li = document.createElement("li");
 
-    if (task.completed) {
-      li.classList.add("completed");
-    }
+  li.className =
+  "task flex items-center gap-4 border-2 border-black rounded-[20px] px-5 py-4";
 
-    /* checkbox */
+  if (task.completed) {
+    li.classList.add("completed");
+  }
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = task.completed;
-    const customCheckbox = document.createElement("div");
-    customCheckbox.classList.add("custom-checkbox");
+  /* CHECKBOX PERSONALIZADO */
 
-    if (task.completed) {
-      customCheckbox.classList.add("checked");
-    }
+  const customCheckbox = document.createElement("div");
+  customCheckbox.classList.add("custom-checkbox");
 
-    customCheckbox.addEventListener("click", () => {
+  if (task.completed) {
+    customCheckbox.classList.add("checked");
+  }
 
-      task.completed = !task.completed;
+  customCheckbox.addEventListener("click", () => {
 
-      localStorage.setItem("tasks", JSON.stringify(tasks));
+    task.completed = !task.completed;
 
-      renderTasks();
-      renderCalendar();
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 
-    });
+    renderTasks();
+    renderCalendar();
 
-    /* titulo */
-
-    const span = document.createElement("span");
-    span.textContent = task.title;
-
-    /* editar tarea */
-
-    span.addEventListener("dblclick", () => {
-
-      const newTitle = prompt("Editar tarea:", task.title);
-
-      if (newTitle !== null && newTitle.trim() !== "") {
-
-        task.title = newTitle.trim();
-
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-
-        renderTasks();
-        renderCalendar();
-      }
-    });
-
-    /* categoria */
-
-    const category = document.createElement("small");
-    category.textContent = task.category || "";
-
-    /* fecha */
-
-    const date = document.createElement("small");
-    date.textContent = task.date || "";
-
-    /* eliminar */
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Eliminar";
-
-    /* completar */
-
-    checkbox.addEventListener("change", () => {
-
-      task.completed = checkbox.checked;
-
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-
-      renderTasks();
-      renderCalendar();
-    });
-
-    /* borrar */
-
-    deleteBtn.addEventListener("click", () => {
-
-      const index = tasks.findIndex(t => t.id === task.id);
-
-      tasks.splice(index, 1);
-
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-
-      renderTasks();
-      renderCalendar();
-    });
-
-    const textContainer = document.createElement("div");
-    textContainer.classList.add("task-text");
-
-    const meta = document.createElement("div");
-    meta.classList.add("task-meta");
-
-    meta.appendChild(category);
-    meta.appendChild(date);
-
-    textContainer.appendChild(span);
-    textContainer.appendChild(meta);
-
-    li.appendChild(customCheckbox);
-    li.appendChild(textContainer);
-    li.appendChild(deleteBtn);
-
-    taskList.appendChild(li);
   });
+
+  /* TITULO */
+
+  const span = document.createElement("span");
+  span.textContent = task.title;
+
+  span.addEventListener("dblclick", () => {
+
+    const newTitle = prompt("Editar tarea:", task.title);
+
+    if (newTitle !== null && newTitle.trim() !== "") {
+
+      task.title = newTitle.trim();
+
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+
+      renderTasks();
+      renderCalendar();
+    }
+
+  });
+
+  /* CATEGORIA */
+
+  const category = document.createElement("span");
+  category.textContent = task.category || "";
+
+  /* FECHA */
+
+  const date = document.createElement("span");
+  date.textContent = task.date || "";
+
+  /* CONTENEDOR TEXTO */
+
+  const textContainer = document.createElement("div");
+  textContainer.className = "flex flex-col flex-1";
+
+  const meta = document.createElement("div");
+  meta.className = "flex gap-3 text-xs text-gray-500";
+
+  meta.appendChild(category);
+  meta.appendChild(date);
+
+  textContainer.appendChild(span);
+  textContainer.appendChild(meta);
+
+  /* BOTON ELIMINAR */
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Eliminar";
+
+  deleteBtn.className =
+  "bg-black text-white rounded-full px-4 py-1 text-sm hover:opacity-80";
+
+  deleteBtn.addEventListener("click", () => {
+
+    const index = tasks.findIndex(t => t.id === task.id);
+
+    tasks.splice(index, 1);
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    renderTasks();
+    renderCalendar();
+
+  });
+
+  /* AÑADIR ELEMENTOS */
+
+  li.appendChild(customCheckbox);
+  li.appendChild(textContainer);
+  li.appendChild(deleteBtn);
+
+  taskList.appendChild(li);
+
+});
 
   /* -------------------- ESTADISTICAS -------------------- */
 

@@ -2,160 +2,231 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <title>TaskFlow</title>
+<meta charset="UTF-8">
+<title>TaskFlow</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdn.tailwindcss.com"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      fontFamily: {
+        title: ['"Playfair Display"', 'serif'],
+        ui: ['Inter', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body>
 
-<header>
-  <h1>T A R E A S</h1>
+<body class="bg-[#f6f2ef] text-black dark:bg-[#121212] dark:text-white p-6 font-ui">
+
+<!-- HEADER -->
+
+<header class="border-t-2 border-b-2 border-black dark:border-white py-6 mb-8 flex justify-between items-center">
+
+<h1 class="font-title tracking-[8px] text-2xl">
+T A R E A S
+</h1>
+
+<button id="themeToggle"
+class="border-2 border-black dark:border-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+fill="none"
+viewBox="0 0 24 24"
+stroke="currentColor"
+class="w-5 h-5">
+
+<path stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M21 12.79A9 9 0 1111.21 3
+7 7 0 0021 12.79z"/>
+
+</svg>
+
+</button>
+
 </header>
 
 
-<main>
+<main class="flex gap-10">
 
-  <!-- =========================
-       LISTA DE TAREAS
-  ========================= -->
+<section class="flex-1">
 
-  <section class="task-list">
+<div class="flex items-center gap-4 mb-6 flex-wrap">
 
-    <div class="top-controls">
+<button id="openModal"
+class="border-2 border-black dark:border-white rounded-xl px-4 py-2 font-title tracking-wider">
++ Añadir tarea
+</button>
 
-      <button type="button" id="openModal" class="add-btn">
-        + Añadir tarea
-      </button>
+<div class="filters flex items-center gap-3">
 
-      <div class="filters">
+<button data-filter="all"
+class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
+Todas
+</button>
 
-        <button data-filter="all">Todas</button>
-        <button data-filter="pending">Pendientes</button>
-        <button data-filter="completed">Completadas</button>
+<button data-filter="pending"
+class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
+Pendientes
+</button>
 
-        <div class="category-filter">
+<button data-filter="completed"
+class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
+Completadas
+</button>
 
-          <button id="categoryButton">Categorías</button>
+<div>
 
-          <select id="categorySelect" class="hidden">
-            <option value="all">Todas</option>
-            <option value="personal">Personal</option>
-            <option value="trabajo">Trabajo</option>
-            <option value="estudio">Estudio</option>
-            <option value="compras">Compras</option>
-            <option value="otros">Otros</option>
-          </select>
+<button id="categoryButton"
+class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
+Categorías
+</button>
 
-        </div>
+<select id="categorySelect"
+class="hidden border-2 border-black dark:border-white rounded-xl px-3 py-1">
 
-        <div class="search-container">
+<option value="all">Todas</option>
+<option value="personal">Personal</option>
+<option value="trabajo">Trabajo</option>
+<option value="estudio">Estudio</option>
+<option value="compras">Compras</option>
+<option value="otros">Otros</option>
 
-          <button id="searchButton" class="search-btn">
+</select>
 
-            <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-              <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2"/>
-            </svg>
+</div>
 
-          </button>
+<div class="flex items-center gap-2">
 
-          <input 
-            type="text" 
-            id="searchInput" 
-            class="hidden"
-            placeholder="Buscar tarea..."
-          >
+<button id="searchButton"
+class="w-10 h-10 border-2 border-black dark:border-white rounded-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
 
-        </div>
+<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">
+<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+<line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2"/>
+</svg>
 
-      </div>
+</button>
 
-    </div>
+<input
+type="text"
+id="searchInput"
+class="hidden border-2 border-black dark:border-white rounded-xl px-3 py-1 bg-transparent"
+placeholder="Buscar tarea..."
+>
 
-    <!-- Lista de tareas -->
-    <ul id="tasks"></ul>
+</div>
 
-  </section>
+</div>
 
+</div>
 
+<ul id="tasks" class="space-y-4"></ul>
 
-  <!-- =========================
-       PANEL DERECHO
-  ========================= -->
-
-  <aside class="stats">
-
-    <!-- Calendario -->
-
-    <div class="calendar-box">
-
-      <h2>Calendario</h2>
-
-      <div id="calendar"></div>
-
-    </div>
+</section>
 
 
-    <!-- Estadísticas -->
+<!-- PANEL DERECHO -->
 
-    <div class="statistics">
+<aside class="w-[300px] flex flex-col gap-6">
 
-      <h2>Estadísticas</h2>
+<div class="border-2 border-black dark:border-white rounded-[20px] p-5">
 
-      <p>Total: <span id="total-tasks">0</span></p>
-      <p>Completadas: <span id="completed-tasks">0</span></p>
-      <p>Pendientes: <span id="pending-tasks">0</span></p>
+<h2 class="font-title tracking-[3px] text-center mb-4">
+Calendario
+</h2>
 
-    </div>
+<div id="calendar"></div>
 
-  </aside>
+</div>
+
+<div class="border-2 border-black dark:border-white rounded-[20px] p-5">
+
+<h2 class="font-title tracking-[3px] text-center mb-4">
+Estadísticas
+</h2>
+
+<p>Total: <span id="total-tasks">0</span></p>
+<p>Completadas: <span id="completed-tasks">0</span></p>
+<p>Pendientes: <span id="pending-tasks">0</span></p>
+
+</div>
+
+</aside>
 
 </main>
 
 
+<!-- MODAL -->
 
-<!-- =========================
-     MODAL NUEVA TAREA
-========================= -->
+<div id="taskModal"
+class="modal hidden fixed inset-0 bg-black/40 flex items-center justify-center">
 
-<div id="taskModal" class="modal hidden">
+<div class="bg-white dark:bg-[#1f1f1f] rounded-[20px] p-6 flex flex-col gap-3 w-[320px]">
 
-  <div class="modal-content">
+<h2 class="font-title text-lg">Nueva tarea</h2>
 
-    <h2>Nueva tarea</h2>
+<input
+id="modalTaskTitle"
+type="text"
+placeholder="Título de la tarea"
+class="border-2 border-black dark:border-white rounded-lg px-2 py-1 bg-transparent">
 
-    <input id="modalTaskTitle" type="text" placeholder="Título de la tarea">
+<label>Categoría</label>
 
-    <label>Categoría</label>
-    <select id="modalTaskCategory">
-      <option value="personal">Personal</option>
-      <option value="trabajo">Trabajo</option>
-      <option value="estudio">Estudio</option>
-      <option value="compras">Compras</option>
-      <option value="otros">Otros</option>
-    </select>
+<select id="modalTaskCategory"
+class="border-2 border-black dark:border-white rounded-lg px-2 py-1 bg-transparent">
 
-    <label>Fecha objetivo</label>
-    <input id="modalTaskDate" type="date">
+<option value="personal">Personal</option>
+<option value="trabajo">Trabajo</option>
+<option value="estudio">Estudio</option>
+<option value="compras">Compras</option>
+<option value="otros">Otros</option>
 
-    <div class="modal-buttons">
-      <button id="saveTask">Guardar</button>
-      <button id="closeModal">Cancelar</button>
-    </div>
+</select>
 
-  </div>
+<label>Fecha objetivo</label>
+
+<input
+id="modalTaskDate"
+type="date"
+class="border-2 border-black dark:border-white rounded-lg px-2 py-1 bg-transparent">
+
+<div class="flex justify-between mt-2">
+
+<button id="saveTask"
+class="border-2 border-black dark:border-white rounded-xl px-3 py-1">
+Guardar
+</button>
+
+<button id="closeModal"
+class="border-2 border-black dark:border-white rounded-xl px-3 py-1">
+Cancelar
+</button>
 
 </div>
 
+</div>
+
+</div>
 
 
 <script src="app.js"></script>
