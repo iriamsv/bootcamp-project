@@ -13,6 +13,8 @@
   --space: 16px;
 
   --font-main: "Inter", system-ui, -apple-system, sans-serif;
+  --font-ui: "Inter", sans-serif;
+  --font-title: "Playfair Display", serif;
 }
 
 
@@ -32,14 +34,16 @@
 ========================= */
 
 body {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-ui);
   background: var(--color-bg);
   color: var(--color-text);
   padding: 24px;
 }
 
 h1 {
-  text-align: center;
+  font-family: var(--font-title);
+  letter-spacing: 8px;
+  font-weight: 500;
 }
 
 
@@ -84,6 +88,15 @@ main {
   border-radius: 20px;
   padding: 20px;
   width: 100%;
+}
+
+.calendar-box h2,
+.statistics h2 {
+  text-align: center;
+  font-family: var(--font-title);
+  letter-spacing: 3px;
+  font-weight: 500;
+  margin-bottom: 15px;
 }
 
 .calendar {
@@ -151,6 +164,12 @@ main {
   padding: 6px 12px;
   border-radius: 10px;
   cursor: pointer;
+}
+
+.filters button,
+.add-btn {
+  font-family: var(--font-title);
+  letter-spacing: 2px;
 }
 
 
