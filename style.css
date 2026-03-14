@@ -183,5 +183,20 @@ h1,
 }
 
 
+/* =========================
+   OCULTAR BARRA
+========================= */
+
+#filtersBar::-webkit-scrollbar {
+  display: none;
+}
+
+#filtersBar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+
 
 

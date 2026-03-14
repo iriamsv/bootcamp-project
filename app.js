@@ -25,6 +25,8 @@ const calendar = document.getElementById("calendar");
 
 const searchButton = document.getElementById("searchButton");
 const searchInput = document.getElementById("searchInput");
+const filtersBar = document.getElementById("filtersBar");
+const searchContainer = document.getElementById("searchContainer");
 
 
 /* -------------------- ESTADO -------------------- */
@@ -72,10 +74,32 @@ categorySelect.addEventListener("change", () => {
 
 searchButton.addEventListener("click", () => {
 
-  searchInput.classList.toggle("hidden");
+  const isHidden = searchInput.classList.contains("hidden");
 
-  if (!searchInput.classList.contains("hidden")) {
+  if (isHidden) {
+
+    // abrir buscador
+    searchInput.classList.remove("hidden");
+
+    // ocultar solo los botones
+    document.querySelectorAll("#filtersBar button:not(#searchButton)")
+      .forEach(btn => btn.classList.add("hidden"));
+
     searchInput.focus();
+
+  } else {
+
+    // cerrar buscador
+    searchInput.classList.add("hidden");
+
+    // volver a mostrar filtros
+    document.querySelectorAll("#filtersBar button")
+      .forEach(btn => btn.classList.remove("hidden"));
+
+    searchInput.value = "";
+    searchText = "";
+    renderTasks();
+
   }
 
 });

@@ -33,18 +33,20 @@ tailwind.config = {
 </head>
 
 
-<body class="bg-[#f6f2ef] text-black dark:bg-[#121212] dark:text-white p-6 font-ui">
+<body class="bg-[#f6f2ef] text-black dark:bg-[#121212] dark:text-white px-4 md:px-6 py-6 font-ui">
 
 <!-- HEADER -->
 
-<header class="border-t-2 border-b-2 border-black dark:border-white py-6 mb-8 flex justify-between items-center">
+<header class="border-t-2 border-b-2 border-black dark:border-white py-6 mb-8">
 
-<h1 class="font-title tracking-[8px] text-2xl">
+<div class="relative flex items-center justify-center w-full">
+
+<h1 class="font-title tracking-[8px] text-2xl text-center w-full">
 T A R E A S
 </h1>
 
 <button id="themeToggle"
-class="border-2 border-black dark:border-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
+class="absolute right-4 border-2 border-black dark:border-white rounded-full w-10 h-10 flex items-center justify-center">
 
 <svg xmlns="http://www.w3.org/2000/svg"
 fill="none"
@@ -55,45 +57,67 @@ class="w-5 h-5">
 <path stroke-linecap="round"
 stroke-linejoin="round"
 stroke-width="2"
-d="M21 12.79A9 9 0 1111.21 3
-7 7 0 0021 12.79z"/>
+d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
 
 </svg>
 
 </button>
 
+</div>
+
 </header>
 
 
-<main class="flex gap-10">
+<main class="flex flex-col md:flex-row gap-10">
 
 <section class="flex-1">
 
-<div class="flex items-center gap-4 mb-6 flex-wrap">
+<!-- CONTROLES SUPERIORES -->
+
+<div class="flex flex-col gap-4 mb-6">
+
+<!-- BOTON AÑADIR -->
+
+<div class="flex items-center gap-3">
 
 <button id="openModal"
 class="border-2 border-black dark:border-white rounded-xl px-4 py-2 font-title tracking-wider">
 + Añadir tarea
 </button>
 
-<div class="filters flex items-center gap-3">
+<button id="searchButton"
+class="w-8 h-8 md:w-10 md:h-10 border-2 border-black dark:border-white rounded-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
+
+<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">
+<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+<line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2"/>
+</svg>
+
+</button>
+
+</div>
+
+<!-- FILTROS -->
+
+<div id="filtersBar"
+class="flex items-center justify-center gap-2 flex-nowrap overflow-x-auto w-full">
 
 <button data-filter="all"
-class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
+class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title">
 Todas
 </button>
 
 <button data-filter="pending"
-class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
+class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title">
 Pendientes
 </button>
 
 <button data-filter="completed"
-class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
+class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title">
 Completadas
 </button>
 
-<div>
+<div class="relative flex flex-col items-center">
 
 <button id="categoryButton"
 class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
@@ -101,7 +125,7 @@ Categorías
 </button>
 
 <select id="categorySelect"
-class="hidden border-2 border-black dark:border-white rounded-xl px-3 py-1">
+class="hidden absolute top-full mt-2 border-2 border-black dark:border-white rounded-xl px-3 py-1 bg-[#f6f2ef] dark:bg-[#121212]">
 
 <option value="all">Todas</option>
 <option value="personal">Personal</option>
@@ -114,30 +138,18 @@ class="hidden border-2 border-black dark:border-white rounded-xl px-3 py-1">
 
 </div>
 
-<div class="flex items-center gap-2">
+</div>
 
-<button id="searchButton"
-class="w-10 h-10 border-2 border-black dark:border-white rounded-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
+</div>
 
-<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4">
-<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-<line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2"/>
-</svg>
-
-</button>
+<!-- BUSCADOR -->
 
 <input
 type="text"
 id="searchInput"
-class="hidden border-2 border-black dark:border-white rounded-xl px-3 py-1 bg-transparent"
+class="hidden border-2 border-black dark:border-white rounded-xl px-3 py-2 bg-transparent mt-3 mb-6 w-full"
 placeholder="Buscar tarea..."
 >
-
-</div>
-
-</div>
-
-</div>
 
 <ul id="tasks" class="space-y-4"></ul>
 
@@ -146,11 +158,11 @@ placeholder="Buscar tarea..."
 
 <!-- PANEL DERECHO -->
 
-<aside class="w-[300px] flex flex-col gap-6">
+<aside class="w-full md:w-[300px] flex flex-col gap-6 items-center">
 
-<div class="border-2 border-black dark:border-white rounded-[20px] p-5">
+<div class="border-2 border-black dark:border-white rounded-[20px] p-5 w-full max-w-[320px]">
 
-<h2 class="font-title tracking-[3px] text-center mb-4">
+<h2 class="font-title tracking-[3px] text-center text-xl mb-4">
 Calendario
 </h2>
 
@@ -158,9 +170,9 @@ Calendario
 
 </div>
 
-<div class="border-2 border-black dark:border-white rounded-[20px] p-5">
+<div class="border-2 border-black dark:border-white rounded-[20px] p-5 w-full max-w-[320px]">
 
-<h2 class="font-title tracking-[3px] text-center mb-4">
+<h2 class="font-title tracking-[3px] text-center text-xl mb-4">
 Estadísticas
 </h2>
 
