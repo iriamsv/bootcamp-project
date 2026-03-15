@@ -3,11 +3,12 @@ console.log("JS funcionando");
 /* -------------------- ELEMENTOS -------------------- */
 
 const taskList = document.getElementById("tasks");
-const filterButtons = document.querySelectorAll(".filters button");
+const filterButtons = document.querySelectorAll("#filtersBar button");
 
 const totalTasks = document.getElementById("total-tasks");
 const completedTasks = document.getElementById("completed-tasks");
 const pendingTasks = document.getElementById("pending-tasks");
+const progressBar = document.getElementById("progressBar");
 
 const openModal = document.getElementById("openModal");
 const modal = document.getElementById("taskModal");
@@ -78,19 +79,21 @@ searchButton.addEventListener("click", () => {
 
   if (isHidden) {
 
-    // abrir buscador
+    // mostrar buscador
     searchInput.classList.remove("hidden");
+    searchInput.classList.remove("pointer-events-none");
 
-    // ocultar solo los botones
-    document.querySelectorAll("#filtersBar button:not(#searchButton)")
+    // ocultar filtros
+    document.querySelectorAll("#filtersBar button")
       .forEach(btn => btn.classList.add("hidden"));
 
     searchInput.focus();
 
   } else {
 
-    // cerrar buscador
+    // ocultar buscador
     searchInput.classList.add("hidden");
+    searchInput.classList.add("pointer-events-none");
 
     // volver a mostrar filtros
     document.querySelectorAll("#filtersBar button")
@@ -103,6 +106,7 @@ searchButton.addEventListener("click", () => {
   }
 
 });
+
 
 searchInput.addEventListener("input", () => {
 
@@ -193,7 +197,14 @@ function renderTasks() {
   const li = document.createElement("li");
 
   li.className =
-  "task flex items-center gap-4 border-2 border-black rounded-[20px] px-5 py-4";
+  "task flex items-center gap-4 border-2 border-black dark:border-white rounded-[20px] px-5 py-4 cursor-pointer";
+
+
+
+
+
+
+
 
   if (task.completed) {
     li.classList.add("completed");
@@ -202,7 +213,7 @@ function renderTasks() {
   /* CHECKBOX PERSONALIZADO */
 
   const customCheckbox = document.createElement("div");
-  customCheckbox.classList.add("custom-checkbox");
+  customCheckbox.className = "custom-checkbox cursor-pointer";
 
   if (task.completed) {
     customCheckbox.classList.add("checked");
@@ -274,16 +285,23 @@ function renderTasks() {
 
   deleteBtn.addEventListener("click", () => {
 
-    const index = tasks.findIndex(t => t.id === task.id);
+    li.classList.add("removing");
 
-    tasks.splice(index, 1);
+    setTimeout(() => {
 
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+       const index = tasks.findIndex(t => t.id === task.id);
 
-    renderTasks();
-    renderCalendar();
+       tasks.splice(index, 1);
+
+       localStorage.setItem("tasks", JSON.stringify(tasks));
+
+       renderTasks();
+       renderCalendar();
+
+    }, 250); // mismo tiempo que la animación
 
   });
+
 
   /* AÑADIR ELEMENTOS */
 
@@ -303,7 +321,17 @@ function renderTasks() {
 
   totalTasks.textContent = total;
   completedTasks.textContent = completed;
-  pendingTasks.textContent = pending;
+    pendingTasks.textContent = pending;
+
+/* progreso */
+
+  if (total === 0) {
+    progressBar.style.width = "0%";
+  } else {
+    const percent = (completed / total) * 100;
+    progressBar.style.width = percent + "%";
+  }
+
 }
 
 /* -------------------- CALENDARIO -------------------- */
@@ -339,6 +367,16 @@ function renderCalendar() {
     const day = document.createElement("div");
     day.classList.add("day");
     day.textContent = d;
+
+    // marcar día actual
+    if (
+      d === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear()
+    ) {
+      day.classList.add("today");
+    }
+
 
     const hasTask = tasks.some(task => {
 

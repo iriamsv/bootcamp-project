@@ -196,6 +196,86 @@ h1,
   scrollbar-width: none;
 }
 
+/* =========================
+   FIX HOVER TARJETAS
+========================= */
+
+#tasks {
+  pointer-events: none;
+}
+
+.task {
+  pointer-events: auto;
+  transition: all 0.2s ease;
+}
+
+.task:hover {
+  background: rgba(0,0,0,0.05);
+  transform: translateY(-2px);
+}
+
+.dark .task:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* =========================
+   DIA ACTUAL CALENDARIO
+========================= */
+
+.day.today {
+  background: black;
+  color: white;
+  border-radius: 50%;
+}
+
+.dark .day.today {
+  background: white;
+  color: black;
+}
+
+/* =========================
+   ANIMACIÓN NUEVA TAREA
+========================= */
+
+@keyframes taskAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.task {
+  animation: taskAppear 0.25s ease;
+}
+
+/* =========================
+   ANIMACIÓN ELIMINAR TAREA
+========================= */
+
+@keyframes taskRemove {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.task.removing {
+  animation: taskRemove 0.25s ease forwards;
+}
+
+
+
+
+
+
 
 
 

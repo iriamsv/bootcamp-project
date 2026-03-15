@@ -3,7 +3,9 @@
 
 <head>
 <meta charset="UTF-8">
-<title>TaskFlow</title>
+<title>Agenda</title>
+
+<link rel="icon" type="image/png" href="img/favicon.png">
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -37,7 +39,17 @@ tailwind.config = {
 
 <!-- HEADER -->
 
-<header class="border-t-2 border-b-2 border-black dark:border-white py-6 mb-8">
+<header class="border-t-2 border-b-2 border-black dark:border-white py-6 mb-8 relative">
+
+<!-- FRESA -->
+
+<img 
+src="img/strawberry.png"
+class="absolute -left-0 -top-7 w-20 md:w-29 pointer-events-none select-none z-0"
+
+>
+
+<!-- TÍTULO -->
 
 <div class="relative flex items-center justify-center w-full">
 
@@ -46,7 +58,7 @@ T A R E A S
 </h1>
 
 <button id="themeToggle"
-class="absolute right-4 border-2 border-black dark:border-white rounded-full w-10 h-10 flex items-center justify-center">
+class="absolute right-4 border-2 border-black dark:border-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transiton">
 
 <svg xmlns="http://www.w3.org/2000/svg"
 fill="none"
@@ -65,6 +77,14 @@ d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
 
 </div>
 
+<!-- PIJAMA -->
+
+<img 
+src="img/sweater.png"
+class="absolute right-16 top-9 w-20 translate-x-4 pointer-events-none select-none z-0"
+
+>
+
 </header>
 
 
@@ -81,7 +101,7 @@ d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
 <div class="flex items-center gap-3">
 
 <button id="openModal"
-class="border-2 border-black dark:border-white rounded-xl px-4 py-2 font-title tracking-wider">
+class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
 + Añadir tarea
 </button>
 
@@ -103,24 +123,24 @@ class="w-8 h-8 md:w-10 md:h-10 border-2 border-black dark:border-white rounded-f
 class="flex items-center justify-center gap-2 flex-nowrap w-full">
 
 <button data-filter="all"
-class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title">
+class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
 Todas
 </button>
 
-<button data-filter="pending"
-class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title">
+<button data-filter="all"
+class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
 Pendientes
 </button>
 
 <button data-filter="completed"
-class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title">
+class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
 Completadas
 </button>
 
 <div class="relative flex flex-col items-center">
 
 <button id="categoryButton"
-class="border-2 border-black dark:border-white rounded-xl px-3 py-1 font-title">
+class="border-2 border-black dark:border-white rounded-lg px-2 py-[3px] text-sm md:text-base font-title hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
 Categorías
 </button>
 
@@ -147,7 +167,7 @@ class="hidden absolute top-full mt-2 border-2 border-black dark:border-white rou
 <input
 type="text"
 id="searchInput"
-class="hidden border-2 border-black dark:border-white rounded-xl px-3 py-2 bg-transparent mt-3 mb-6 w-full"
+class="hidden border-2 border-black dark:border-white rounded-xl px-3 py-2 bg-transparent mt-3 mb-6 w-full pointer-events-none"
 placeholder="Buscar tarea..."
 >
 
@@ -170,7 +190,15 @@ Calendario
 
 </div>
 
-<div class="border-2 border-black dark:border-white rounded-[20px] p-5 w-full max-w-[320px]">
+<div class="border-2 border-black dark:border-white rounded-[20px] p-5 w-full max-w-[320px] relative">
+
+<!-- TARTA -->
+
+<img
+src="img/cake.png"
+class="absolute -bottom-8 -right-6 w-20 md:w-24 pointer-events-none select-none z-0"
+
+/>
 
 <h2 class="font-title tracking-[3px] text-center text-xl mb-4">
 Estadísticas
@@ -179,6 +207,19 @@ Estadísticas
 <p>Total: <span id="total-tasks">0</span></p>
 <p>Completadas: <span id="completed-tasks">0</span></p>
 <p>Pendientes: <span id="pending-tasks">0</span></p>
+
+<div class="mt-4">
+
+  <div class="w-full h-3 border-2 border-black dark:border-white rounded-full overflow-hidden">
+
+    <div id="progressBar"
+    class="h-full bg-black dark:bg-white transition-all duration-300"
+    style="width:0%">
+    </div>
+
+  </div>
+
+</div>
 
 </div>
 
