@@ -13,7 +13,12 @@ La interfaz se divide en varias secciones principales:
 * **Cabecera:** contiene el título de la aplicación.
 * **Formulario:** permite añadir nuevas tareas.
 * **Lista de tareas:** muestra las tareas existentes y permite marcarlas como completadas.
-* **Panel de filtrado:** permite ver tareas según su estado.
+* **Panel de filtrado:** permite ver tareas según su estado o categoría.
+* **Estadísticas:** permite visualizar una estadística de las tareas completadas y pendientes.
+* **Barra de progreso:** permite visualizar tu progreso completando tareas mediante una barra.
+* **Modo oscuro:** cambio de modo mediante un botón.
+* **Búsqueda de tareas:** permite buscar tareas guardadas en la aplicación.
+* **Calendario:** muestra un calendario donde se visualizan las tareas pendientes.
 
 Cada tarea puede marcarse como completada o eliminarse.
 
