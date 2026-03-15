@@ -127,3 +127,33 @@ Las pruebas realizadas confirman que la aplicación funciona correctamente en lo
 - Cambio de estado de tareas  
 - Eliminación de tareas  
 - Persistencia de datos tras recargar la página  
+
+## Accesibilidad básica
+
+Se realizaron varias comprobaciones básicas de accesibilidad para asegurar que la aplicación pueda ser utilizada por diferentes tipos de usuarios.
+
+### Uso con teclado
+Se comprobó que la aplicación puede utilizarse únicamente con el teclado.  
+Mediante la tecla **Tab** es posible navegar entre los distintos elementos interactivos de la interfaz:
+
+- Botón **Añadir tarea**
+- Botón **Buscar**
+- Filtros (**Todas, Pendientes, Completadas**)
+- Selector de **Categorías**
+- Botón de **modo oscuro**
+- Botones dentro del **modal de creación de tareas**
+
+Todos los elementos interactivos pueden activarse usando **Enter**.
+
+---
+
+### Botones accesibles
+Se revisó que todos los botones tengan:
+
+- Texto visible, o
+- Un atributo `aria-label` cuando el botón contiene solo un icono.
+
+Ejemplo:
+
+```html
+<button aria-label="Buscar tarea">

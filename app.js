@@ -26,9 +26,6 @@ const calendar = document.getElementById("calendar");
 
 const searchButton = document.getElementById("searchButton");
 const searchInput = document.getElementById("searchInput");
-const filtersBar = document.getElementById("filtersBar");
-const searchContainer = document.getElementById("searchContainer");
-
 
 /* -------------------- ESTADO -------------------- */
 
@@ -40,7 +37,6 @@ let searchText = "";
 /* -------------------- DARK MODE -------------------- */
 
 const themeToggle = document.getElementById("themeToggle");
-
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
@@ -51,79 +47,92 @@ themeToggle.addEventListener("click", () => {
 
   document.documentElement.classList.toggle("dark");
 
-  if (document.documentElement.classList.contains("dark")) {
-    localStorage.setItem("theme", "dark");
-  } else {
-    localStorage.setItem("theme", "light");
+  localStorage.setItem(
+    "theme",
+    document.documentElement.classList.contains("dark") ? "dark" : "light"
+  );
+
+});
+
+/* ------------------ CATEGORÍAS ----------------- */
+
+categoryButton.addEventListener("click", () => {
+  categorySelect.classList.toggle("hidden");
+
+  document.addEventListener("click", (e) => {
+
+  const clickedInsideButton = categoryButton.contains(e.target);
+  const clickedInsideSelect = categorySelect.contains(e.target);
+
+  if (!clickedInsideButton && !clickedInsideSelect) {
+    categorySelect.classList.add("hidden");
   }
 
 });
 
-/* ------------------ DESPLEGABLE CATEGORIAS ----------------- */
 
-categoryButton.addEventListener("click", () => {
-  categorySelect.classList.toggle("hidden");
 });
 
 categorySelect.addEventListener("change", () => {
+
   currentCategory = categorySelect.value;
+
+  categorySelect.classList.add("hidden");
+
   renderTasks();
   renderCalendar();
+
 });
 
-/* ----------------------- BÚSQUEDAS ----------------------- */
+/* ----------------------- BÚSQUEDA ----------------------- */
 
 searchButton.addEventListener("click", () => {
 
-  const isHidden = searchInput.classList.contains("hidden");
+  const hidden = searchInput.classList.contains("hidden");
 
-  if (isHidden) {
+  if (hidden) {
 
-    // mostrar buscador
     searchInput.classList.remove("hidden");
-    searchInput.classList.remove("pointer-events-none");
 
-    // ocultar filtros
-    document.querySelectorAll("#filtersBar button")
-      .forEach(btn => btn.classList.add("hidden"));
+    filtersBar.querySelectorAll("button").forEach(btn => {
+      btn.classList.add("hidden");
+    });
+
+    searchInput.classList.add("search-appear");
 
     searchInput.focus();
 
   } else {
 
-    // ocultar buscador
     searchInput.classList.add("hidden");
-    searchInput.classList.add("pointer-events-none");
 
-    // volver a mostrar filtros
-    document.querySelectorAll("#filtersBar button")
-      .forEach(btn => btn.classList.remove("hidden"));
+    filtersBar.querySelectorAll("button").forEach(btn => {
+      btn.classList.remove("hidden");
+    });
+
+    searchInput.classList.remove("search-appear");
 
     searchInput.value = "";
     searchText = "";
-    renderTasks();
 
+    renderTasks();
   }
 
 });
 
 
-searchInput.addEventListener("input", () => {
-
-  searchText = searchInput.value.toLowerCase();
-
-  renderTasks();
-
-});
-
 /* -------------------- FILTROS -------------------- */
 
 filterButtons.forEach(button => {
+
   button.addEventListener("click", () => {
+
     currentFilter = button.dataset.filter;
     renderTasks();
     renderCalendar();
+
   });
+
 });
 
 /* -------------------- MODAL -------------------- */
@@ -141,7 +150,6 @@ closeModal.addEventListener("click", () => {
 saveTask.addEventListener("click", () => {
 
   const title = modalTitle.value.trim();
-
   if (title === "") return;
 
   const task = {
@@ -157,13 +165,13 @@ saveTask.addEventListener("click", () => {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 
   modalTitle.value = "";
-  modalCategory.value = "";
   modalDate.value = "";
 
   modal.classList.add("hidden");
 
   renderTasks();
   renderCalendar();
+
 });
 
 /* -------------------- RENDERIZAR TAREAS -------------------- */
@@ -172,164 +180,232 @@ function renderTasks() {
 
   taskList.innerHTML = "";
 
-  let filteredTasks = tasks;
+  let filteredTasks = [...tasks];
 
-  if (currentFilter === "pending") {
-    filteredTasks = tasks.filter(task => !task.completed);
-  }
+  /* ordenar tareas */
 
-  if (currentFilter === "completed") {
-    filteredTasks = tasks.filter(task => task.completed);
-  }
+  filteredTasks.sort((a, b) => {
 
-  if (currentCategory !== "all") {
-    filteredTasks = filteredTasks.filter(task => task.category === currentCategory);
-  }
+    if (a.completed !== b.completed) {
+      return a.completed ? 1 : -1;
+    }
 
-  if (searchText !== "") {
-    filteredTasks = filteredTasks.filter(task =>
-      task.title.toLowerCase().includes(searchText)
-    );
-  }
+    if (!a.date && !b.date) return 0;
+    if (!a.date) return 1;
+    if (!b.date) return -1;
 
-  filteredTasks.forEach(task => {
-
-  const li = document.createElement("li");
-
-  li.className =
-  "task flex items-center gap-4 border-2 border-black dark:border-white rounded-[20px] px-5 py-4 cursor-pointer";
-
-
-
-
-
-
-
-
-  if (task.completed) {
-    li.classList.add("completed");
-  }
-
-  /* CHECKBOX PERSONALIZADO */
-
-  const customCheckbox = document.createElement("div");
-  customCheckbox.className = "custom-checkbox cursor-pointer";
-
-  if (task.completed) {
-    customCheckbox.classList.add("checked");
-  }
-
-  customCheckbox.addEventListener("click", () => {
-
-    task.completed = !task.completed;
-
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-
-    renderTasks();
-    renderCalendar();
+    return new Date(a.date) - new Date(b.date);
 
   });
 
-  /* TITULO */
+  /* filtros */
 
-  const span = document.createElement("span");
-  span.textContent = task.title;
+  if (currentFilter === "pending") {
+    filteredTasks = filteredTasks.filter(t => !t.completed);
+  }
 
-  span.addEventListener("dblclick", () => {
+  if (currentFilter === "completed") {
+    filteredTasks = filteredTasks.filter(t => t.completed);
+  }
 
-    const newTitle = prompt("Editar tarea:", task.title);
+  if (currentCategory !== "all") {
+    filteredTasks = filteredTasks.filter(t => t.category === currentCategory);
+  }
 
-    if (newTitle !== null && newTitle.trim() !== "") {
+  if (searchText !== "") {
+    filteredTasks = filteredTasks.filter(t =>
+      t.title.toLowerCase().includes(searchText)
+    );
+  }
 
-      task.title = newTitle.trim();
+  /* render */
+
+  filteredTasks.forEach(task => {
+
+    const li = document.createElement("li");
+
+    li.className =
+    "task flex items-center gap-4 border-2 border-black dark:border-white rounded-[20px] px-5 py-4";
+
+    li.draggable = true;
+    li.dataset.id = task.id;
+
+    /* drag */
+
+    li.addEventListener("dragstart", () => {
+      li.classList.add("dragging");
+    });
+
+    li.addEventListener("dragend", () => {
+      li.classList.remove("dragging");
+      saveNewOrder();
+    });
+
+    /* checkbox */
+
+    const checkbox = document.createElement("div");
+    checkbox.className = "custom-checkbox cursor-pointer";
+    checkbox.tabIndex = 0;
+
+    if (task.completed) checkbox.classList.add("checked");
+
+    checkbox.addEventListener("click", toggleTask);
+
+    checkbox.addEventListener("keydown", e => {
+
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleTask();
+      }
+
+    });
+
+    function toggleTask() {
+
+      task.completed = !task.completed;
 
       localStorage.setItem("tasks", JSON.stringify(tasks));
 
       renderTasks();
       renderCalendar();
+
     }
 
+    /* texto */
+
+    const span = document.createElement("span");
+    span.textContent = task.title;
+
+    const textContainer = document.createElement("div");
+    textContainer.className = "flex flex-col flex-1";
+
+    const meta = document.createElement("div");
+    meta.className = "flex gap-3 text-xs text-gray-500";
+
+    const category = document.createElement("span");
+    category.textContent = task.category;
+
+    const date = document.createElement("span");
+    date.textContent = task.date;
+
+    meta.appendChild(category);
+    meta.appendChild(date);
+
+    textContainer.appendChild(span);
+    textContainer.appendChild(meta);
+
+    /* eliminar */
+
+    const deleteBtn = document.createElement("button");
+
+    deleteBtn.textContent = "Eliminar";
+
+    deleteBtn.className =
+    "bg-black text-white rounded-full px-4 py-1 text-sm hover:opacity-80";
+
+    deleteBtn.addEventListener("click", () => {
+
+      li.classList.add("removing");
+
+      setTimeout(() => {
+
+        tasks = tasks.filter(t => t.id !== task.id);
+
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        renderTasks();
+        renderCalendar();
+
+      }, 250);
+
+    });
+
+    li.appendChild(checkbox);
+    li.appendChild(textContainer);
+    li.appendChild(deleteBtn);
+
+    taskList.appendChild(li);
+
   });
 
-  /* CATEGORIA */
+  updateStats();
 
-  const category = document.createElement("span");
-  category.textContent = task.category || "";
+}
 
-  /* FECHA */
+/* -------------------- DRAGOVER -------------------- */
 
-  const date = document.createElement("span");
-  date.textContent = task.date || "";
+taskList.addEventListener("dragover", e => {
 
-  /* CONTENEDOR TEXTO */
+  e.preventDefault();
 
-  const textContainer = document.createElement("div");
-  textContainer.className = "flex flex-col flex-1";
+  const dragging = document.querySelector(".dragging");
+  const afterElement = getDragAfterElement(taskList, e.clientY);
 
-  const meta = document.createElement("div");
-  meta.className = "flex gap-3 text-xs text-gray-500";
-
-  meta.appendChild(category);
-  meta.appendChild(date);
-
-  textContainer.appendChild(span);
-  textContainer.appendChild(meta);
-
-  /* BOTON ELIMINAR */
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Eliminar";
-
-  deleteBtn.className =
-  "bg-black text-white rounded-full px-4 py-1 text-sm hover:opacity-80";
-
-  deleteBtn.addEventListener("click", () => {
-
-    li.classList.add("removing");
-
-    setTimeout(() => {
-
-       const index = tasks.findIndex(t => t.id === task.id);
-
-       tasks.splice(index, 1);
-
-       localStorage.setItem("tasks", JSON.stringify(tasks));
-
-       renderTasks();
-       renderCalendar();
-
-    }, 250); // mismo tiempo que la animación
-
-  });
-
-
-  /* AÑADIR ELEMENTOS */
-
-  li.appendChild(customCheckbox);
-  li.appendChild(textContainer);
-  li.appendChild(deleteBtn);
-
-  taskList.appendChild(li);
+  if (afterElement == null) {
+    taskList.appendChild(dragging);
+  } else {
+    taskList.insertBefore(dragging, afterElement);
+  }
 
 });
 
-  /* -------------------- ESTADISTICAS -------------------- */
+/* -------------------- ORDEN -------------------- */
+
+function getDragAfterElement(container, y) {
+
+  const elements = [...container.querySelectorAll(".task:not(.dragging)")];
+
+  return elements.reduce((closest, child) => {
+
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+
+}
+
+function saveNewOrder() {
+
+  const newOrder = [];
+
+  document.querySelectorAll("#tasks li").forEach(li => {
+
+    const id = Number(li.dataset.id);
+    const task = tasks.find(t => t.id === id);
+
+    if (task) newOrder.push(task);
+
+  });
+
+  tasks = newOrder;
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+
+}
+
+/* -------------------- ESTADÍSTICAS -------------------- */
+
+function updateStats() {
 
   const total = tasks.length;
-  const completed = tasks.filter(task => task.completed).length;
+  const completed = tasks.filter(t => t.completed).length;
   const pending = total - completed;
 
   totalTasks.textContent = total;
   completedTasks.textContent = completed;
-    pendingTasks.textContent = pending;
+  pendingTasks.textContent = pending;
 
-/* progreso */
+  if (progressBar) {
 
-  if (total === 0) {
-    progressBar.style.width = "0%";
-  } else {
-    const percent = (completed / total) * 100;
-    progressBar.style.width = percent + "%";
+    progressBar.style.width =
+      total === 0 ? "0%" : (completed / total) * 100 + "%";
+
   }
 
 }
@@ -368,7 +444,8 @@ function renderCalendar() {
     day.classList.add("day");
     day.textContent = d;
 
-    // marcar día actual
+    /* marcar día actual */
+
     if (
       d === today.getDate() &&
       month === today.getMonth() &&
@@ -377,6 +454,7 @@ function renderCalendar() {
       day.classList.add("today");
     }
 
+    /* comprobar si hay tarea ese día */
 
     const hasTask = tasks.some(task => {
 
@@ -384,9 +462,12 @@ function renderCalendar() {
 
       const taskDate = new Date(task.date);
 
-      return taskDate.getDate() === d &&
-             taskDate.getMonth() === month &&
-             taskDate.getFullYear() === year;
+      return (
+        taskDate.getDate() === d &&
+        taskDate.getMonth() === month &&
+        taskDate.getFullYear() === year
+      );
+
     });
 
     if (hasTask) {
@@ -394,8 +475,45 @@ function renderCalendar() {
     }
 
     calendar.appendChild(day);
+
   }
+
 }
+
+/* -------------------- ESC -------------------- */
+
+document.addEventListener("keydown", (e) => {
+
+  if (e.key === "Escape") {
+
+    // cerrar buscador
+    if (!searchInput.classList.contains("hidden")) {
+
+      searchInput.classList.add("hidden");
+
+      filtersBar.querySelectorAll("button").forEach(btn => {
+        btn.classList.remove("hidden");
+      });
+
+      searchInput.value = "";
+      searchText = "";
+      renderTasks();
+    }
+
+    // cerrar categorías
+    if (!categorySelect.classList.contains("hidden")) {
+      categorySelect.classList.add("hidden");
+    }
+
+    // cerrar modal
+    if (!modal.classList.contains("hidden")) {
+      modal.classList.add("hidden");
+    }
+
+  }
+
+});
+
 
 /* -------------------- INICIALIZAR -------------------- */
 

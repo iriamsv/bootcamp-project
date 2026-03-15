@@ -271,7 +271,64 @@ h1,
   animation: taskRemove 0.25s ease forwards;
 }
 
+/* =========================
+   ACCESIBILIDAD
+========================= */
 
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid black;
+  outline-offset: 2px;
+}
+
+.custom-checkbox:focus {
+  outline: 2px solid black;
+  outline-offset: 2px;
+}
+
+/* MODO OSCURO */
+
+.dark button:focus-visible,
+.dark input:focus-visible,
+.dark select:focus-visible {
+  outline: 2px solid white;
+}
+
+.dark .custom-checkbox:focus {
+  outline: 2px solid white;
+}
+
+/* =========================
+   ARRASTRAR TAREAS
+========================= */
+
+.dragging {
+  opacity: 0.4;
+}
+
+.task {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* =========================
+   ANIMACIÓN BUSCADOR
+========================= */
+
+.search-appear {
+  animation: searchExpand 0.25s ease;
+}
+
+@keyframes searchExpand {
+  from {
+    opacity: 0;
+    transform: scaleX(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
 
 
 
