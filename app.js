@@ -276,6 +276,10 @@ function renderTasks() {
     const span = document.createElement("span");
     span.textContent = task.title;
 
+      if (task.completed){
+        span.classList.add("line-through", "opacity-50");
+      }
+
     const textContainer = document.createElement("div");
     textContainer.className = "flex flex-col flex-1";
 
