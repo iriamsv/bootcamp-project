@@ -153,7 +153,20 @@ Se revisó que todos los botones tengan:
 - Texto visible, o
 - Un atributo `aria-label` cuando el botón contiene solo un icono.
 
-Ejemplo:
+---
 
-```html
-<button aria-label="Buscar tarea">
+### Aplicación desplegada
+
+Puedes acceder a la aplicación aquí:
+
+https://bootcamp-project-eight.vercel.app/
+
+---
+
+### Tecnologías utilizadas
+
+- HTML5
+- CSS3/ Tailwind
+- JavaScript (Vanilla)
+- LocalStorage
+- Vercel (deployment)
