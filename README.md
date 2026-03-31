@@ -24,149 +24,80 @@ Cada tarea puede marcarse como completada o eliminarse.
 
 El diseño inicial de la aplicación se encuentra en la carpeta `docs/design`.
 
----
+## Funcionalidades
+✅ Crear tareas
+🗑️ Eliminar tareas
+✔️ Marcar tareas como completadas
+🔍 Buscar tareas
+🗂️ Filtrar por estado y categoría
+📅 Visualización en calendario
+🌙 Modo oscuro
+📊 Estadísticas con barra de progreso
+✨ Nuevas funcionalidades (IA)
+❤️ Marcar tareas como importantes
+🔤 Ordenar tareas por nombre
 
-# Testing manual de la aplicación
+## Tecnologías usadas
+HTML5
+CSS3 / Tailwind
+JavaScript (Vanilla)
+LocalStorage
+Vercel (deployment)
 
-Se realizaron distintas pruebas manuales para comprobar el correcto funcionamiento de la aplicación.
+## Cómo usar la aplicación
+Pulsa en "Añadir tarea"
+Introduce un título, categoría y fecha
+Guarda la tarea
 
-## 1. Prueba con la lista vacía
+Puedes:
+Marcarla como completada
+Eliminarla
+Filtrarla
+Buscarla
+Marcarla como importante ❤️
 
-**Acción:**  
-Abrir la aplicación sin tareas guardadas.
+## Estructura del proyecto
+/docs /ai index.html style.css app.js README.md
 
-**Resultado esperado:**  
-La lista aparece vacía y las estadísticas muestran:
+🧩 Ejemplo de uso
+``` js
+const task = {
+  id: Date.now(),
+  title: "Estudiar JavaScript",
+  category: "estudio",
+  date: "2026-04-10",
+  completed: false,
+  important: true
+};
+```
 
-Total: 0
-Completadas: 0
-Pendientes: 0
+## Documentación del código
+renderTasks()
+Renderiza la lista de tareas en el DOM aplicando filtros, búsqueda y
+ordenación.
 
+renderCalendar()
+Genera el calendario del mes actual y muestra las tareas.
 
-**Resultado obtenido:**  
-La aplicación muestra correctamente una lista vacía y las estadísticas en 0.
+saveTasks()
+Guarda las tareas en localStorage.
 
----
+## Uso de Inteligencia Artificial
+Se utilizó IA para: - Refactorizar código - Detectar errores - Generar
+funcionalidades - Mejorar documentación
+Todo el código fue revisado manualmente.
 
-## 2. Intentar añadir una tarea sin título
+## Testing
+Se realizaron pruebas para: - Creación de tareas - Validación -
+Persistencia - Calendario - Filtros
 
-**Acción:**  
-Abrir el formulario de nueva tarea y pulsar guardar sin introducir un título.
+## Accesibilidad
+Uso con teclado
+Botones accesibles
 
-**Resultado esperado:**  
-La tarea no se crea.
-
-**Resultado obtenido:**  
-La aplicación no permite crear tareas sin título, funcionando correctamente la validación.
-
----
-
-## 3. Añadir una tarea con un título muy largo
-
-**Acción:**  
-Crear una tarea con un texto largo.
-
-**Resultado esperado:**  
-La tarea se muestra correctamente sin romper el diseño.
-
-**Resultado obtenido:**  
-La tarea se muestra correctamente dentro de la tarjeta y el diseño se mantiene.
-
----
-
-## 4. Marcar varias tareas como completadas
-
-**Acción:**  
-Marcar varias tareas utilizando el checkbox.
-
-**Resultado esperado:**  
-
-- Las tareas cambian a estado completado  
-- El texto aparece tachado  
-- Las estadísticas se actualizan  
-
-**Resultado obtenido:**  
-Las tareas cambian correctamente de estado y las estadísticas se actualizan automáticamente.
-
----
-
-## 5. Eliminar varias tareas
-
-**Acción:**  
-Eliminar varias tareas utilizando el botón "Eliminar".
-
-**Resultado esperado:**  
-
-- Las tareas desaparecen de la lista  
-- Las estadísticas se actualizan  
-
-**Resultado obtenido:**  
-Las tareas se eliminan correctamente y las estadísticas reflejan los cambios.
-
----
-
-## 6. Recargar la página
-
-**Acción:**  
-Recargar el navegador.
-
-**Resultado esperado:**  
-Las tareas creadas previamente se mantienen guardadas.
-
-**Resultado obtenido:**  
-Las tareas se mantienen correctamente gracias al almacenamiento en `localStorage`.
-
----
-
-# Conclusión
-
-Las pruebas realizadas confirman que la aplicación funciona correctamente en los siguientes aspectos:
-
-- Creación de tareas  
-- Validación de datos  
-- Cambio de estado de tareas  
-- Eliminación de tareas  
-- Persistencia de datos tras recargar la página  
-
-## Accesibilidad básica
-
-Se realizaron varias comprobaciones básicas de accesibilidad para asegurar que la aplicación pueda ser utilizada por diferentes tipos de usuarios.
-
-### Uso con teclado
-Se comprobó que la aplicación puede utilizarse únicamente con el teclado.  
-Mediante la tecla **Tab** es posible navegar entre los distintos elementos interactivos de la interfaz:
-
-- Botón **Añadir tarea**
-- Botón **Buscar**
-- Filtros (**Todas, Pendientes, Completadas**)
-- Selector de **Categorías**
-- Botón de **modo oscuro**
-- Botones dentro del **modal de creación de tareas**
-
-Todos los elementos interactivos pueden activarse usando **Enter**.
-
----
-
-### Botones accesibles
-Se revisó que todos los botones tengan:
-
-- Texto visible, o
-- Un atributo `aria-label` cuando el botón contiene solo un icono.
-
----
-
-### Aplicación desplegada
-
-Puedes acceder a la aplicación aquí:
-
+## Aplicación
 https://bootcamp-project-eight.vercel.app/
 
----
-
-### Tecnologías utilizadas
-
-- HTML5
-- CSS3/ Tailwind
-- JavaScript (Vanilla)
-- LocalStorage
-- Vercel (deployment)
+## Conclusión
+Proyecto práctico que demuestra el uso de JavaScript y la integración de
+IA en el desarrollo.

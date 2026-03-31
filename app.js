@@ -4,6 +4,7 @@ console.log("JS funcionando");
 
 const taskList = document.getElementById("tasks");
 const filterButtons = document.querySelectorAll("#filtersBar button");
+const filtersBar = document.getElementById("filtersBar"); // ✅ FIX
 
 const totalTasks = document.getElementById("total-tasks");
 const completedTasks = document.getElementById("completed-tasks");
@@ -35,6 +36,25 @@ let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let selectedDate = null;
 let searchText = "";
 
+/* -------------------- FUNCIONES AUXILIARES -------------------- */
+
+/**
+ * Guarda las tareas en localStorage
+ */
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+/**
+ * Cambia el estado de una tarea
+ */
+function toggleTask(task) {
+  task.completed = !task.completed;
+  saveTasks();
+  renderTasks();
+  renderCalendar();
+}
+
 /* -------------------- DARK MODE -------------------- */
 
 const themeToggle = document.getElementById("themeToggle");
@@ -45,14 +65,12 @@ if (savedTheme === "dark") {
 }
 
 themeToggle.addEventListener("click", () => {
-
   document.documentElement.classList.toggle("dark");
 
   localStorage.setItem(
     "theme",
     document.documentElement.classList.contains("dark") ? "dark" : "light"
   );
-
 });
 
 /* ------------------ CATEGORÍAS ----------------- */
@@ -61,38 +79,28 @@ categoryButton.addEventListener("click", () => {
   categorySelect.classList.toggle("hidden");
 
   document.addEventListener("click", (e) => {
+    const clickedInsideButton = categoryButton.contains(e.target);
+    const clickedInsideSelect = categorySelect.contains(e.target);
 
-  const clickedInsideButton = categoryButton.contains(e.target);
-  const clickedInsideSelect = categorySelect.contains(e.target);
-
-  if (!clickedInsideButton && !clickedInsideSelect) {
-    categorySelect.classList.add("hidden");
-  }
-
-});
-
-
+    if (!clickedInsideButton && !clickedInsideSelect) {
+      categorySelect.classList.add("hidden");
+    }
+  });
 });
 
 categorySelect.addEventListener("change", () => {
-
   currentCategory = categorySelect.value;
-
   categorySelect.classList.add("hidden");
-
   renderTasks();
   renderCalendar();
-
 });
 
 /* ----------------------- BÚSQUEDA ----------------------- */
 
 searchButton.addEventListener("click", () => {
-
   const hidden = searchInput.classList.contains("hidden");
 
   if (hidden) {
-
     searchInput.classList.remove("hidden");
 
     filtersBar.querySelectorAll("button").forEach(btn => {
@@ -100,11 +108,8 @@ searchButton.addEventListener("click", () => {
     });
 
     searchInput.classList.add("search-appear");
-
     searchInput.focus();
-
   } else {
-
     searchInput.classList.add("hidden");
 
     filtersBar.querySelectorAll("button").forEach(btn => {
@@ -118,22 +123,16 @@ searchButton.addEventListener("click", () => {
 
     renderTasks();
   }
-
 });
-
 
 /* -------------------- FILTROS -------------------- */
 
 filterButtons.forEach(button => {
-
   button.addEventListener("click", () => {
-
     currentFilter = button.dataset.filter;
     renderTasks();
     renderCalendar();
-
   });
-
 });
 
 /* -------------------- MODAL -------------------- */
@@ -149,44 +148,50 @@ closeModal.addEventListener("click", () => {
 /* -------------------- CREAR TAREA -------------------- */
 
 saveTask.addEventListener("click", () => {
-
   const title = modalTitle.value.trim();
-  if (title === "") return;
+
+  // ✅ VALIDACIÓN MEJORADA
+  if (!title) {
+    alert("El título es obligatorio");
+    return;
+  }
+
+  if (title.length < 3) {
+    alert("El título debe tener al menos 3 caracteres");
+    return;
+  }
 
   const task = {
     id: Date.now(),
     title: title,
     category: modalCategory.value,
     date: modalDate.value,
-    completed: false
+    completed: false,
+    important: false
   };
 
   tasks.push(task);
-
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+  saveTasks();
 
   modalTitle.value = "";
   modalDate.value = "";
-
   modal.classList.add("hidden");
 
   renderTasks();
   renderCalendar();
-
 });
 
 /* -------------------- RENDERIZAR TAREAS -------------------- */
 
+/**
+ * Renderiza las tareas aplicando filtros y orden
+ */
 function renderTasks() {
-
   taskList.innerHTML = "";
 
   let filteredTasks = [...tasks];
 
-  /* ordenar tareas */
-
   filteredTasks.sort((a, b) => {
-
     if (a.completed !== b.completed) {
       return a.completed ? 1 : -1;
     }
@@ -196,10 +201,7 @@ function renderTasks() {
     if (!b.date) return -1;
 
     return new Date(a.date) - new Date(b.date);
-
   });
-
-  /* filtros */
 
   if (currentFilter === "pending") {
     filteredTasks = filteredTasks.filter(t => !t.completed);
@@ -213,17 +215,15 @@ function renderTasks() {
     filteredTasks = filteredTasks.filter(t => t.category === currentCategory);
   }
 
-  if (searchText !== "") {
+  if (searchText) {
     filteredTasks = filteredTasks.filter(t =>
       t.title.toLowerCase().includes(searchText)
     );
   }
 
   if (selectedDate) {
-
-  filteredTasks = filteredTasks.filter(task => {
-
-    if (!task.date) return false;
+    filteredTasks = filteredTasks.filter(task => {
+      if (!task.date) return false;
 
       const taskDate = new Date(task.date);
 
@@ -232,24 +232,16 @@ function renderTasks() {
         taskDate.getMonth() === selectedDate.getMonth() &&
         taskDate.getFullYear() === selectedDate.getFullYear()
       );
-
     });
-
   }
 
-  /* render */
-
   filteredTasks.forEach(task => {
-
     const li = document.createElement("li");
-
     li.className =
-    "task flex items-center gap-4 border-2 border-black dark:border-white rounded-[20px] px-5 py-4";
+      "task flex items-center gap-4 border-2 border-black dark:border-white rounded-[20px] px-5 py-4";
 
     li.draggable = true;
     li.dataset.id = task.id;
-
-    /* drag */
 
     li.addEventListener("dragstart", () => {
       li.classList.add("dragging");
@@ -260,44 +252,32 @@ function renderTasks() {
       saveNewOrder();
     });
 
-    /* checkbox */
-
     const checkbox = document.createElement("div");
     checkbox.className = "custom-checkbox cursor-pointer";
     checkbox.tabIndex = 0;
 
     if (task.completed) checkbox.classList.add("checked");
 
-    checkbox.addEventListener("click", toggleTask);
+    checkbox.addEventListener("click", () => toggleTask(task));
 
     checkbox.addEventListener("keydown", e => {
-
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        toggleTask();
+        toggleTask(task);
       }
-
     });
-
-    function toggleTask() {
-
-      task.completed = !task.completed;
-
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-
-      renderTasks();
-      renderCalendar();
-
-    }
-
-    /* texto */
 
     const span = document.createElement("span");
     span.textContent = task.title;
 
-      if (task.completed){
-        span.classList.add("line-through", "opacity-50");
-      }
+    if (task.completed) {
+      span.classList.add("line-through", "opacity-50");
+    }
+
+    if (task.important) {
+      li.style.borderColor = "#e85d75";
+      li.style.backgroundColor = "#fff0f3";
+    }
 
     const textContainer = document.createElement("div");
     textContainer.className = "flex flex-col flex-1";
@@ -317,105 +297,62 @@ function renderTasks() {
     textContainer.appendChild(span);
     textContainer.appendChild(meta);
 
-    /* eliminar */
+    const importantBtn = document.createElement("button");
+      importantBtn.textContent = "♥";
+
+      if (task.important) {
+        importantBtn.style.color = "#e85d75";
+      } else {
+        importantBtn.style.color = "#1d1d1d";
+      }
+
+      importantBtn.addEventListener("click", () => {
+        task.important = !task.important;
+        saveTasks();
+        renderTasks();
+    });
 
     const deleteBtn = document.createElement("button");
-
     deleteBtn.textContent = "Eliminar";
-
     deleteBtn.className =
-    "bg-black text-white rounded-full px-4 py-1 text-sm hover:opacity-80";
+      "bg-black text-white rounded-full px-4 py-1 text-sm hover:opacity-80";
 
     deleteBtn.addEventListener("click", () => {
-
       li.classList.add("removing");
 
       setTimeout(() => {
-
         tasks = tasks.filter(t => t.id !== task.id);
-
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-
+        saveTasks();
         renderTasks();
         renderCalendar();
-
       }, 250);
-
     });
 
     li.appendChild(checkbox);
     li.appendChild(textContainer);
+    li.appendChild(importantBtn);
     li.appendChild(deleteBtn);
 
     taskList.appendChild(li);
-
   });
 
   updateStats();
-
-}
-
-/* -------------------- DRAGOVER -------------------- */
-
-taskList.addEventListener("dragover", e => {
-
-  e.preventDefault();
-
-  const dragging = document.querySelector(".dragging");
-  const afterElement = getDragAfterElement(taskList, e.clientY);
-
-  if (afterElement == null) {
-    taskList.appendChild(dragging);
-  } else {
-    taskList.insertBefore(dragging, afterElement);
-  }
-
-});
-
-/* -------------------- ORDEN -------------------- */
-
-function getDragAfterElement(container, y) {
-
-  const elements = [...container.querySelectorAll(".task:not(.dragging)")];
-
-  return elements.reduce((closest, child) => {
-
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-
-    if (offset < 0 && offset > closest.offset) {
-      return { offset: offset, element: child };
-    } else {
-      return closest;
-    }
-
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
-
 }
 
 function saveNewOrder() {
-
   const newOrder = [];
 
   document.querySelectorAll("#tasks li").forEach(li => {
-
     const id = Number(li.dataset.id);
     const task = tasks.find(t => t.id === id);
-
     if (task) newOrder.push(task);
-
   });
 
   tasks = newOrder;
-
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-
+  saveTasks();
 }
 
-/* -------------------- ESTADÍSTICAS -------------------- */
-
 function updateStats() {
-
   const total = tasks.length;
   const completed = tasks.filter(t => t.completed).length;
   const pending = total - completed;
@@ -425,18 +362,14 @@ function updateStats() {
   pendingTasks.textContent = pending;
 
   if (progressBar) {
-
     progressBar.style.width =
       total === 0 ? "0%" : (completed / total) * 100 + "%";
-
   }
-
 }
 
 /* -------------------- CALENDARIO -------------------- */
 
 function renderCalendar() {
-
   if (!calendar) return;
 
   calendar.innerHTML = "";
@@ -462,7 +395,6 @@ function renderCalendar() {
   }
 
   for (let d = 1; d <= totalDays; d++) {
-
     const day = document.createElement("div");
     day.classList.add("day");
     day.textContent = d;
@@ -470,30 +402,26 @@ function renderCalendar() {
     const clickedDate = new Date(year, month, d);
 
     day.addEventListener("click", () => {
+      if (
+        selectedDate &&
+        clickedDate.getTime() === selectedDate.getTime()
+      ) {
+        selectedDate = null;
+      } else {
+        selectedDate = clickedDate;
+      }
+
+      renderTasks();
+    });
 
     if (
       selectedDate &&
-      clickedDate.getTime() === selectedDate.getTime()
+      d === selectedDate.getDate() &&
+      month === selectedDate.getMonth() &&
+      year === selectedDate.getFullYear()
     ) {
-      selectedDate = null; // quitar filtro
-    } else {
-      selectedDate = clickedDate;
-    } 
-
-    renderTasks();
-
-  });
-
-  if (
-    selectedDate &&
-    d === selectedDate.getDate() &&
-    month === selectedDate.getMonth() &&
-    year === selectedDate.getFullYear()
-  ) {
-    day.classList.add("bg-black", "text-white");
-  }
-
-    /* marcar día actual */
+      day.classList.add("bg-black", "text-white");
+    }
 
     if (
       d === today.getDate() &&
@@ -503,10 +431,7 @@ function renderCalendar() {
       day.classList.add("today");
     }
 
-    /* comprobar si hay tarea ese día */
-
     const hasTask = tasks.some(task => {
-
       if (!task.date || task.completed) return false;
 
       const taskDate = new Date(task.date);
@@ -516,7 +441,6 @@ function renderCalendar() {
         taskDate.getMonth() === month &&
         taskDate.getFullYear() === year
       );
-
     });
 
     if (hasTask) {
@@ -524,55 +448,8 @@ function renderCalendar() {
     }
 
     calendar.appendChild(day);
-
   }
-
-  day.addEventListener("click", () => {
-
-    selectedDate = new Date(year, month, d);
-
-    renderTasks();
-
-  });
-
 }
-
-/* -------------------- ESC -------------------- */
-
-document.addEventListener("keydown", (e) => {
-
-  if (e.key === "Escape") {
-
-    // cerrar buscador
-    if (!searchInput.classList.contains("hidden")) {
-
-      searchInput.classList.add("hidden");
-
-      filtersBar.querySelectorAll("button").forEach(btn => {
-        btn.classList.remove("hidden");
-      });
-
-      searchInput.value = "";
-      searchText = "";
-      renderTasks();
-    }
-
-    // cerrar categorías
-    if (!categorySelect.classList.contains("hidden")) {
-      categorySelect.classList.add("hidden");
-    }
-
-    // cerrar modal
-    if (!modal.classList.contains("hidden")) {
-      modal.classList.add("hidden");
-    }
-
-  }
-
-});
-
-
-/* -------------------- INICIALIZAR -------------------- */
 
 renderTasks();
 renderCalendar();
