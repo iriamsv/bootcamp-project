@@ -32,6 +32,7 @@ const searchInput = document.getElementById("searchInput");
 let currentCategory = "all";
 let currentFilter = "all";
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let selectedDate = null;
 let searchText = "";
 
 /* -------------------- DARK MODE -------------------- */
@@ -216,6 +217,24 @@ function renderTasks() {
     filteredTasks = filteredTasks.filter(t =>
       t.title.toLowerCase().includes(searchText)
     );
+  }
+
+  if (selectedDate) {
+
+  filteredTasks = filteredTasks.filter(task => {
+
+    if (!task.date) return false;
+
+      const taskDate = new Date(task.date);
+
+      return (
+        taskDate.getDate() === selectedDate.getDate() &&
+        taskDate.getMonth() === selectedDate.getMonth() &&
+        taskDate.getFullYear() === selectedDate.getFullYear()
+      );
+
+    });
+
   }
 
   /* render */
@@ -448,6 +467,32 @@ function renderCalendar() {
     day.classList.add("day");
     day.textContent = d;
 
+    const clickedDate = new Date(year, month, d);
+
+    day.addEventListener("click", () => {
+
+    if (
+      selectedDate &&
+      clickedDate.getTime() === selectedDate.getTime()
+    ) {
+      selectedDate = null; // quitar filtro
+    } else {
+      selectedDate = clickedDate;
+    } 
+
+    renderTasks();
+
+  });
+
+  if (
+    selectedDate &&
+    d === selectedDate.getDate() &&
+    month === selectedDate.getMonth() &&
+    year === selectedDate.getFullYear()
+  ) {
+    day.classList.add("bg-black", "text-white");
+  }
+
     /* marcar día actual */
 
     if (
@@ -481,6 +526,14 @@ function renderCalendar() {
     calendar.appendChild(day);
 
   }
+
+  day.addEventListener("click", () => {
+
+    selectedDate = new Date(year, month, d);
+
+    renderTasks();
+
+  });
 
 }
 
