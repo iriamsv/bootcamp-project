@@ -101,3 +101,62 @@ https://bootcamp-project-eight.vercel.app/
 ## Conclusión
 Proyecto práctico que demuestra el uso de JavaScript y la integración de
 IA en el desarrollo.
+
+# Pruebas de integración realizadas
+GET /api/v1/tasks
+
+Petición
+
+GET /api/v1/tasks
+
+Resultado esperado
+
+- Código 200 OK
+- Devuelve un array de tareas
+
+POST /api/v1/tasks
+
+Petición válida
+
+{
+  "title": "Ir al gimnasio"
+}
+
+Resultado esperado
+
+- Código 201 Created
+- Devuelve la tarea creada
+
+POST con datos inválidos
+
+Petición
+
+{
+  "title": ""
+}
+
+Resultado esperado
+
+- Código 400 Bad Request
+- Mensaje de error indicando que el título es obligatorio
+
+DELETE /api/v1/tasks/
+
+Petición válida
+
+DELETE /api/v1/tasks/123
+
+Resultado esperado
+
+- Código 204 No Content
+
+DELETE de tarea inexistente
+
+Petición
+
+DELETE /api/v1/tasks/999999
+
+Resultado esperado
+
+- Código 404 Not Found
+- Mensaje: "La tarea no existe"

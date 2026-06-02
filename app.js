@@ -1,3 +1,20 @@
+import {
+  obtenerTareas,
+  crearTarea,
+  eliminarTarea
+} from "./api.js";
+
+obtenerTareas()
+  .then(data => {
+
+    tasks = data;
+
+    renderTasks();
+    renderCalendar();
+
+  })
+  .catch(error => console.error(error));
+
 console.log("JS funcionando");
 
 /* -------------------- ELEMENTOS -------------------- */
@@ -147,7 +164,7 @@ closeModal.addEventListener("click", () => {
 
 /* -------------------- CREAR TAREA -------------------- */
 
-saveTask.addEventListener("click", () => {
+saveTask.addEventListener("click", async () => {
   const title = modalTitle.value.trim();
 
   // ✅ VALIDACIÓN MEJORADA
@@ -170,15 +187,25 @@ saveTask.addEventListener("click", () => {
     important: false
   };
 
-  tasks.push(task);
-  saveTasks();
+  try {
 
-  modalTitle.value = "";
-  modalDate.value = "";
-  modal.classList.add("hidden");
+     await crearTarea(title);
 
-  renderTasks();
-  renderCalendar();
+    tasks = await obtenerTareas();
+
+    modalTitle.value = "";
+    modalDate.value = "";
+    modal.classList.add("hidden");
+
+    renderTasks();
+    renderCalendar();
+
+  } catch (error) {
+
+    console.error(error);
+    alert("Error al crear la tarea");
+
+  }
 });
 
 /* -------------------- RENDERIZAR TAREAS -------------------- */
@@ -451,5 +478,5 @@ function renderCalendar() {
   }
 }
 
-renderTasks();
-renderCalendar();
+//renderTasks();
+//renderCalendar();
