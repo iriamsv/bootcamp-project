@@ -12,14 +12,14 @@ export async function obtenerTareas() {
 
 }
 
-export async function crearTarea(title) {
+export async function crearTarea(task) {
 
   const response = await fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ title })
+    body: JSON.stringify(task)
   });
 
   if (!response.ok) {
@@ -39,5 +39,23 @@ export async function eliminarTarea(id) {
   if (!response.ok) {
     throw new Error("Error al eliminar tarea");
   }
+
+}
+
+export async function actualizarTarea(id, data) {
+
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al actualizar tarea");
+  }
+
+  return response.json();
 
 }

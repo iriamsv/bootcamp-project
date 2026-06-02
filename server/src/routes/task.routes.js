@@ -3,7 +3,8 @@ const express = require("express");
 const {
   obtenerTodas,
   crearTarea,
-  eliminarTarea
+  eliminarTarea,
+  actualizarTarea
 } = require("../controllers/task.controller");
 
 const router = express.Router();
@@ -16,5 +17,8 @@ router.post("/", crearTarea);
 
 /* DELETE */
 router.delete("/:id", eliminarTarea);
+
+/* UPDATE */
+router.patch("/:id", actualizarTarea);
 
 module.exports = router;

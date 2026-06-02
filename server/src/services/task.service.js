@@ -30,8 +30,25 @@ const eliminarTarea = (id) => {
 
 };
 
+const actualizarTarea = (id, data) => {
+
+  const task = tasks.find(
+    task => task.id === Number(id)
+  );
+
+  if (!task) {
+    throw new Error("NOT_FOUND");
+  }
+
+  Object.assign(task, data);
+
+  return task;
+
+};
+
 module.exports = {
   obtenerTodas,
   crearTarea,
-  eliminarTarea
+  eliminarTarea,
+  actualizarTarea
 };

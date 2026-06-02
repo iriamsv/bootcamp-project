@@ -1,7 +1,8 @@
 import {
   obtenerTareas,
   crearTarea,
-  eliminarTarea
+  eliminarTarea,
+  actualizarTarea
 } from "./api.js";
 
 obtenerTareas()
@@ -49,7 +50,7 @@ const searchInput = document.getElementById("searchInput");
 
 let currentCategory = "all";
 let currentFilter = "all";
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let tasks = [];
 let selectedDate = null;
 let searchText = "";
 
@@ -58,18 +59,24 @@ let searchText = "";
 /**
  * Guarda las tareas en localStorage
  */
-function saveTasks() {
+/*function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+}*/
 
 /**
  * Cambia el estado de una tarea
  */
-function toggleTask(task) {
-  task.completed = !task.completed;
-  saveTasks();
+async function toggleTask(task) {
+
+  await actualizarTarea(task.id, {
+    completed: !task.completed
+  });
+
+  tasks = await obtenerTareas();
+
   renderTasks();
   renderCalendar();
+
 }
 
 /* -------------------- DARK MODE -------------------- */
@@ -189,7 +196,7 @@ saveTask.addEventListener("click", async () => {
 
   try {
 
-     await crearTarea(title);
+     await crearTarea(task);
 
     tasks = await obtenerTareas();
 
@@ -333,23 +340,32 @@ function renderTasks() {
         importantBtn.style.color = "#1d1d1d";
       }
 
-      importantBtn.addEventListener("click", () => {
-        task.important = !task.important;
-        saveTasks();
+      importantBtn.addEventListener("click", async () => {
+
+        await actualizarTarea(task.id, {
+          important: !task.important
+        });
+
+        tasks = await obtenerTareas();
+
         renderTasks();
-    });
+        renderCalendar();
+
+      });
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Eliminar";
     deleteBtn.className =
       "bg-black text-white rounded-full px-4 py-1 text-sm hover:opacity-80";
 
-    deleteBtn.addEventListener("click", () => {
+    deleteBtn.addEventListener("click", async () => {
       li.classList.add("removing");
 
-      setTimeout(() => {
-        tasks = tasks.filter(t => t.id !== task.id);
-        saveTasks();
+      setTimeout( async () => {
+        await eliminarTarea(task.id);
+
+        tasks = await obtenerTareas();
+
         renderTasks();
         renderCalendar();
       }, 250);

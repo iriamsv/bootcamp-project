@@ -14,7 +14,13 @@ const obtenerTodas = (req, res) => {
 
 const crearTarea = (req, res, next) => {
 
-  const { title } = req.body;
+  const {
+    title,
+    category,
+    date,
+    completed,
+    important
+  } = req.body;
 
   try {
 
@@ -29,7 +35,11 @@ const crearTarea = (req, res, next) => {
     }
 
     const nuevaTarea = taskService.crearTarea({
-      title
+        title,
+        category,
+        date,
+        completed,
+        important
     });
 
     res.status(201).json(nuevaTarea);
@@ -60,8 +70,28 @@ const eliminarTarea = (req, res, next) => {
 
 };
 
+const actualizarTarea = (req, res, next) => {
+
+  try {
+
+    const tareaActualizada = taskService.actualizarTarea(
+      req.params.id,
+      req.body
+    );
+
+    res.status(200).json(tareaActualizada);
+
+  } catch (error) {
+
+    next(error);
+
+  }
+
+};
+
 module.exports = {
   obtenerTodas,
   crearTarea,
-  eliminarTarea
+  eliminarTarea,
+  actualizarTarea
 };
