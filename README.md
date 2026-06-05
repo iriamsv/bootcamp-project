@@ -160,3 +160,186 @@ Resultado esperado
 
 - Código 404 Not Found
 - Mensaje: "La tarea no existe"
+
+## Backend API (Express.js)
+
+La aplicación cuenta con un backend desarrollado en Node.js y Express.js siguiendo una arquitectura por capas:
+
+### Estructura
+
+server/
+├── src/
+│   ├── config/
+│   ├── controllers/
+│   ├── routes/
+│   ├── services/
+│   └── index.js
+├── .env
+└── package.json
+
+### Tecnologías utilizadas
+
+* Node.js
+* Express.js
+* CORS
+* dotenv
+* Nodemon
+
+### Variables de entorno
+
+Archivo `.env`:
+
+PORT=3000
+
+### Middleware utilizados
+
+#### express.json()
+
+Permite convertir automáticamente el cuerpo de las peticiones JSON en objetos JavaScript accesibles mediante `req.body`.
+
+#### cors()
+
+Permite que el frontend pueda comunicarse con el servidor mediante peticiones HTTP desde otro origen.
+
+#### Middleware global de errores
+
+Captura errores no controlados y devuelve respuestas HTTP adecuadas:
+
+* 404 Not Found
+* 500 Internal Server Error
+
+---
+
+## API REST
+
+### Obtener tareas
+
+GET /api/v1/tasks
+
+Respuesta:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Estudiar Node",
+    "category": "estudio",
+    "date": "2026-06-05",
+    "completed": false,
+    "important": false
+  }
+]
+```
+
+### Crear tarea
+
+POST /api/v1/tasks
+
+Body:
+
+```json
+{
+  "title": "Estudiar Node",
+  "category": "estudio",
+  "date": "2026-06-05",
+  "completed": false,
+  "important": false
+}
+```
+
+Respuesta:
+
+* 201 Created
+
+### Actualizar tarea
+
+PATCH /api/v1/tasks/:id
+
+Body:
+
+```json
+{
+  "completed": true
+}
+```
+
+o
+
+```json
+{
+  "important": true
+}
+```
+
+Respuesta:
+
+* 200 OK
+
+### Eliminar tarea
+
+DELETE /api/v1/tasks/:id
+
+Respuesta:
+
+* 204 No Content
+
+---
+
+## Integración Frontend ↔ Backend
+
+La aplicación utiliza la API Fetch para comunicarse con el backend.
+
+Las tareas ya no se almacenan mediante LocalStorage. Toda la información se obtiene y actualiza a través de la API REST desarrollada con Express.
+
+Actualmente se realizan peticiones para:
+
+* Obtener tareas
+* Crear tareas
+* Actualizar tareas
+* Eliminar tareas
+
+---
+
+## Pruebas de integración
+
+Se realizaron pruebas utilizando Thunder Client.
+
+### Casos probados
+
+* Obtener lista de tareas
+* Crear tarea válida
+* Crear tarea con datos inválidos
+* Actualizar tarea existente
+* Eliminar tarea existente
+* Eliminar tarea inexistente
+* Validación de respuestas HTTP
+* Validación del middleware de errores
+
+---
+
+## Funcionalidades implementadas
+
+### Frontend
+
+* Crear tareas
+* Editar tareas
+* Eliminar tareas
+* Marcar tareas como completadas
+* Marcar tareas como favoritas
+* Filtro por estado
+* Filtro por categoría
+* Búsqueda de tareas
+* Calendario interactivo
+* Modo oscuro
+* Drag & Drop
+* Estadísticas y barra de progreso
+
+### Backend
+
+* Arquitectura por capas
+* Variables de entorno
+* API REST
+* Middleware personalizados
+* Validación de datos
+* Manejo global de errores
+* Comunicación mediante Fetch API

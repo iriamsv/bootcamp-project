@@ -53,6 +53,7 @@ let currentFilter = "all";
 let tasks = [];
 let selectedDate = null;
 let searchText = "";
+let editingTaskId = null;
 
 /* -------------------- FUNCIONES AUXILIARES -------------------- */
 
@@ -172,9 +173,9 @@ closeModal.addEventListener("click", () => {
 /* -------------------- CREAR TAREA -------------------- */
 
 saveTask.addEventListener("click", async () => {
+
   const title = modalTitle.value.trim();
 
-  // ✅ VALIDACIÓN MEJORADA
   if (!title) {
     alert("El título es obligatorio");
     return;
@@ -186,22 +187,35 @@ saveTask.addEventListener("click", async () => {
   }
 
   const task = {
-    id: Date.now(),
     title: title,
     category: modalCategory.value,
-    date: modalDate.value,
-    completed: false,
-    important: false
+    date: modalDate.value
   };
 
   try {
 
-     await crearTarea(task);
+    if (editingTaskId) {
+
+      await actualizarTarea(editingTaskId, task);
+
+      editingTaskId = null;
+
+    } else {
+
+      await crearTarea({
+        ...task,
+        completed: false,
+        important: false
+      });
+
+    }
 
     tasks = await obtenerTareas();
 
     modalTitle.value = "";
+    modalCategory.value = "personal";
     modalDate.value = "";
+
     modal.classList.add("hidden");
 
     renderTasks();
@@ -210,9 +224,15 @@ saveTask.addEventListener("click", async () => {
   } catch (error) {
 
     console.error(error);
-    alert("Error al crear la tarea");
+
+    alert(
+      editingTaskId
+        ? "Error al editar la tarea"
+        : "Error al crear la tarea"
+    );
 
   }
+
 });
 
 /* -------------------- RENDERIZAR TAREAS -------------------- */
@@ -353,27 +373,47 @@ function renderTasks() {
 
       });
 
+      const editBtn = document.createElement("button");
+
+        editBtn.textContent = "Editar";
+
+        editBtn.className =
+          "bg-gray-200 dark:bg-gray-700 rounded-full px-4 py-1 text-sm";
+
+        editBtn.addEventListener("click", () => {
+
+          editingTaskId = task.id;
+
+          modalTitle.value = task.title;
+          modalCategory.value = task.category;
+          modalDate.value = task.date;
+
+          modal.classList.remove("hidden");
+
+      });
+
     const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Eliminar";
-    deleteBtn.className =
-      "bg-black text-white rounded-full px-4 py-1 text-sm hover:opacity-80";
+      deleteBtn.textContent = "Eliminar";
+      deleteBtn.className =
+        "bg-black text-white rounded-full px-4 py-1 text-sm hover:opacity-80";
 
-    deleteBtn.addEventListener("click", async () => {
-      li.classList.add("removing");
+      deleteBtn.addEventListener("click", async () => {
+        li.classList.add("removing");
 
-      setTimeout( async () => {
-        await eliminarTarea(task.id);
+        setTimeout( async () => {
+          await eliminarTarea(task.id);
 
-        tasks = await obtenerTareas();
+          tasks = await obtenerTareas();
 
-        renderTasks();
-        renderCalendar();
-      }, 250);
+          renderTasks();
+          renderCalendar();
+        }, 250);
     });
 
     li.appendChild(checkbox);
     li.appendChild(textContainer);
     li.appendChild(importantBtn);
+    li.appendChild(editBtn);
     li.appendChild(deleteBtn);
 
     taskList.appendChild(li);
